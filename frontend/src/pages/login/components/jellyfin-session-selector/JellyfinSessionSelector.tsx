@@ -9,8 +9,7 @@ import { useEffect, type ReactNode } from "react";
 
 const Header = ({ children }: { children: ReactNode }) => {
   return <>
-    <Heading>Sessions List</Heading>
-    <hr />
+    <Heading mb='3'>Sessions List</Heading>
     {children}
   </>
 }
@@ -33,19 +32,26 @@ const JellyfinSessionSelector = () => {
   })
   useEffect(() => {
     const userSession = sessionStorage.getItem(JELLYFIN_ACCESS_TOKEN_KEY);
-    if(userSession){
+    if (userSession) {
       getPlaybackSessions(userSession, serverAddress);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[]);
-  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   if (!store.sessionList || (store.sessionList && store.sessionList.length === 0)) {
     return <Header>
       <EmptySessionComponent serverAddress={serverAddress} />
     </Header>
   }
   function handleSessionSelect(session: SessionInfoDto) {
-    console.log(session)
+    store.setCurrentSession(session);
+    navigate({
+      to: '/server/$serverAddress/sessions/$serverId',
+      params: {
+        serverAddress: serverAddress,
+        serverId: session.Id as string,
+      }
+    })
   }
   return <Flex direction='column' data-testid='JellyfinSessionSelector'>
     <Header>

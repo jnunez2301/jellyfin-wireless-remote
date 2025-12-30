@@ -4,6 +4,7 @@ import JellyfinHostForm from "./pages/login/components/jellyfin-host-form/Jellyf
 import JellyfinServerSelector from "./pages/login/components/jellyfin-server-selector/JellyfinServerSelector"
 import JellyfinUserLoginForm from "./pages/login/components/jellyfin-user-login-form/JellyfinUserLoginForm"
 import JellyfinSessionSelector from "./pages/login/components/jellyfin-session-selector/JellyfinSessionSelector"
+import JellyfinRemoteControl from "./pages/login/components/jellyfin-remote-control/JellyfinRemoteControl"
 
 const rootRoute = createRootRoute({
   component: () => <Outlet />,
@@ -37,15 +38,18 @@ const sessionRoute = createRoute({
   component: () => <JellyfinSessionSelector />
 })
 
-// const sessionByIdRoute = createRoute({
-//   getParentRoute: () => 
-// })
+const sessionByIdRoute = createRoute({
+  getParentRoute: () => indexRoute,
+  path: "/server/$serverAddress/sessions/$serverId",
+  component: () => <JellyfinRemoteControl />
+})
 
 const routeTree = rootRoute.addChildren([
   indexRoute,
   loginHostRoute,
   loginRouteByServerId,
-  sessionRoute
+  sessionRoute,
+  sessionByIdRoute
 ])
 
 declare module '@tanstack/react-router' {

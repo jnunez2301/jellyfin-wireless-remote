@@ -17,9 +17,9 @@ export type Command =
 const useJellyfinPlayback = () => {
   const store = useJellyfinStore();
 
-  async function playback(token: string, session: string, command: Command) {
+  async function playback(serverAddress: string,token: string, sessionId: string, command: Command) {
     try {
-      const res = await fetch(`http://192.168.50.66:8096/Sessions/${session}/Playing/${command}`, {
+      const res = await fetch(`${serverAddress}Sessions/${sessionId}/Playing/${command}`, {
         method: 'POST',
         headers: {
           "X-Emby-Token": token
