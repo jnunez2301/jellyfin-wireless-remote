@@ -14,7 +14,7 @@ export type PlaybackCommand =
   | "FastForward"
   | "PlayPause";
 
-export type SessionCommand = 'VolumeDown' | 'VolumeUp' | 'ToggleMute' | 'MoveRight' | 'MoveLeft' | 'TakeScreenshot';
+export type SessionCommand = 'VolumeDown' | 'VolumeUp' | 'ToggleMute' | 'MoveRight' | 'MoveLeft';
 
 const useJellyfinPlayback = () => {
   const store = useJellyfinStore();
