@@ -38,6 +38,8 @@ I wrote 90% of the code and only a few AI code is here which i checked before pl
 
 I tried my best to keep this code as clean as possible, so i hope it can be manteined with ease for me or other devs.
 
+And no, this app was not vibe coded i'm not a huge fan of vibe coding things.
+
 ## And who are you?
 
 I'm a Software Engineer that has been working for the past 3 years in this field, huge fan of selfhosting and besides other things myself which i go outside as the name of "roxc" or "jnunez" on my github account.
