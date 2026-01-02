@@ -2,13 +2,19 @@ import { JELLYFIN_ACCESS_TOKEN_KEY } from "@/constants/constants";
 import useJellyfinColors from "@/hooks/useJellyfinColors";
 import useJellyfinPlayback from "@/hooks/useJellyfinPlayback";
 import { useJellyfinStore } from "@/stores/useJellyfinStore";
-import { Badge, Box, Button, Flex, Heading, Skeleton, Stack, Text } from "@chakra-ui/react";
+import { Badge, Box, Button, Flex, Heading, IconButton, Skeleton, Stack, Text } from "@chakra-ui/react";
 import type { SessionInfoDto } from "@jellyfin/sdk/lib/generated-client/models";
 import { Link, useNavigate, useParams } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
+import { LuArrowLeft } from "react-icons/lu";
 
 const Header = ({ children }: { children: ReactNode }) => {
   return <>
+    <Link to="/" >
+      <IconButton variant='ghost'>
+        <LuArrowLeft />
+      </IconButton>
+    </Link>
     <Heading mb='3'>Sessions List</Heading>
     {children}
   </>
@@ -45,6 +51,7 @@ const JellyfinSessionSelector = () => {
     return () => clearInterval(intervalId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serverAddress]);
+
   if (!store.sessionList) {
     return <Flex direction='column' gap='3'>
       <Header>
@@ -69,6 +76,7 @@ const JellyfinSessionSelector = () => {
   }
   return <Flex direction='column' data-testid='JellyfinSessionSelector'>
     <Header>
+
       <Stack data-testid="JellyfinSessionSelector">
         {store.sessionList.map((session) => {
           const isPlaying = Boolean(session.NowPlayingItem)

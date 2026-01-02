@@ -68,7 +68,6 @@ const JellyfinUserLoginForm = () => {
         authenticateUserByName: { Username: data.username, Pw: data.password }
       });
       if (auth.data.AccessToken) {
-        console.log(auth.data.AccessToken)
         sessionStorage.setItem(JELLYFIN_ACCESS_TOKEN_KEY, auth.data.AccessToken);
         navigate({
           to: '/server/$serverAddress/sessions',

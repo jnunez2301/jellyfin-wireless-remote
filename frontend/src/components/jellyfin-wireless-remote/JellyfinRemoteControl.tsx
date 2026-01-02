@@ -10,6 +10,8 @@ import { LuArrowLeft } from "react-icons/lu";
 import { PiSpeakerHigh, PiSpeakerLow } from "react-icons/pi";
 import { TiMediaFastForward, TiMediaFastForwardOutline, TiMediaPause, TiMediaPlay, TiMediaRewind, TiMediaRewindOutline, TiMediaStop } from "react-icons/ti";
 
+const BOTTOM_COMMAND_BUTTONS_SIZE = '64px';
+
 const JellyfinRemoteControl = () => {
   const { playback, sessionCommand } = useJellyfinPlayback();
   const { getCurrentSessionInfo } = useJellyfinPlayback();
@@ -54,7 +56,7 @@ const JellyfinRemoteControl = () => {
   }
   return <Flex direction='column' gap='2' data-testid='JellyfinRemoteControl'>
     <Link to=".." >
-      <IconButton variant='subtle'>
+      <IconButton variant='ghost'>
         <LuArrowLeft />
       </IconButton>
     </Link>
@@ -78,11 +80,11 @@ const JellyfinRemoteControl = () => {
       <Heading>{!currentSession?.NowPlayingItem?.SeriesName ? "Nothing is playing" : currentSession.NowPlayingItem.SeriesName}</Heading>
       <Text color='fg.muted'>{!currentSession?.NowPlayingItem?.Name ? 'N/A' : currentSession.NowPlayingItem.Name}</Text>
       <Text>{currentSession?.PlayState?.IsPaused ? 'Paused' : 'Playing'}</Text>
-      {/* PLAY BUTTON */}
-      <Flex alignItems='center' gap='3'>
-        <IconButton disabled={currentSession?.PlayState?.VolumeLevel === 0} size='xl' variant='solid' rounded='100%' onClick={() => handleSessionCommand('VolumeDown')}><PiSpeakerLow /></IconButton>
+      {/* VOLUME BUTTONS */}
+      <Flex alignItems='center' gap='10'>
+        <IconButton disabled={currentSession?.PlayState?.VolumeLevel === 0} size='2xl' variant='solid' rounded='100%' onClick={() => handleSessionCommand('VolumeDown')}><PiSpeakerLow /></IconButton>
         <Text fontSize='xl' fontWeight='bold' >{currentSession?.PlayState?.VolumeLevel}</Text>
-        <IconButton disabled={currentSession?.PlayState?.VolumeLevel === 100} size='xl' variant='solid' rounded='100%' onClick={() => handleSessionCommand('VolumeUp')}><PiSpeakerHigh /></IconButton>
+        <IconButton disabled={currentSession?.PlayState?.VolumeLevel === 100} size='2xl' variant='solid' rounded='100%' onClick={() => handleSessionCommand('VolumeUp')}><PiSpeakerHigh /></IconButton>
       </Flex>
       {/* MUTE BUTTON */}
       <IconButton size='xl' variant={currentSession?.PlayState?.IsMuted ? "solid" : 'subtle'} p='3' my='2' onClick={() => handleSessionCommand('ToggleMute')}>
@@ -92,11 +94,11 @@ const JellyfinRemoteControl = () => {
     {/* TODO: Skip intro */}
     {/* COMMAND BUTTONS */}
     <Flex w='100%' justify='space-evenly' gap='1'>
-      <IconButton w='64px' variant='subtle' onClick={() => handlePlayback('PreviousTrack')}><TiMediaRewind /></IconButton>
-      <IconButton w='64px' variant='subtle' onClick={() => handleSessionCommand('MoveLeft')}><TiMediaRewindOutline /></IconButton>
-      <IconButton w='64px' variant='subtle' onClick={() => handlePlayback('Stop')}><TiMediaStop /></IconButton>
-      <IconButton w='64px' variant='subtle' onClick={() => handleSessionCommand('MoveRight')}><TiMediaFastForwardOutline /></IconButton>
-      <IconButton w='64px' variant='subtle' onClick={() => handlePlayback('NextTrack')}><TiMediaFastForward /></IconButton>
+      <IconButton w={BOTTOM_COMMAND_BUTTONS_SIZE} variant='subtle' onClick={() => handlePlayback('PreviousTrack')}><TiMediaRewind /></IconButton>
+      <IconButton w={BOTTOM_COMMAND_BUTTONS_SIZE} variant='subtle' onClick={() => handleSessionCommand('MoveLeft')}><TiMediaRewindOutline /></IconButton>
+      <IconButton w={BOTTOM_COMMAND_BUTTONS_SIZE} variant='subtle' onClick={() => handlePlayback('Stop')}><TiMediaStop /></IconButton>
+      <IconButton w={BOTTOM_COMMAND_BUTTONS_SIZE} variant='subtle' onClick={() => handleSessionCommand('MoveRight')}><TiMediaFastForwardOutline /></IconButton>
+      <IconButton w={BOTTOM_COMMAND_BUTTONS_SIZE} variant='subtle' onClick={() => handlePlayback('NextTrack')}><TiMediaFastForward /></IconButton>
     </Flex>
   </Flex>;
 };
