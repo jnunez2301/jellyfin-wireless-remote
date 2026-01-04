@@ -43,7 +43,6 @@ const JellyfinRemoteControl = () => {
   async function handleSessionCommand(command: SessionCommand) {
     await sessionCommand(serverAddress, sessionId, command);
     invalidateQuery();
-
   }
   return <Flex direction='column' gap='2' data-testid='JellyfinRemoteControl'>
     <Link to=".." >

@@ -7,14 +7,18 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useParams } from "@tanstack/react-router";
 import { type ReactNode } from "react";
 import { LuArrowLeft } from "react-icons/lu";
+import LogoutButton from "../LogoutButton";
 
 const Header = ({ children }: { children: ReactNode }) => {
   return <>
-    <Link to="/" >
-      <IconButton variant='ghost'>
-        <LuArrowLeft />
-      </IconButton>
-    </Link>
+    <Flex justify='space-between'>
+      <Link to="/" >
+        <IconButton variant='ghost'>
+          <LuArrowLeft />
+        </IconButton>
+      </Link>
+      <LogoutButton />
+    </Flex>
     <Heading mb='3'>Sessions List</Heading>
     {children}
   </>
