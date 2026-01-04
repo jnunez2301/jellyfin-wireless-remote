@@ -1,7 +1,7 @@
 # -----------------------
 # Build stage
 # -----------------------
-FROM oven/bun:latest AS base
+FROM docker.io/oven/bun:slim AS base
 
 # Set working directory
 WORKDIR /app
@@ -21,7 +21,7 @@ RUN bun run build
 # -----------------------
 # Runtime stage
 # -----------------------
-FROM oven/bun:latest AS runner
+FROM docker.io/oven/bun:slim AS runner
 
 WORKDIR /app
 
@@ -32,7 +32,10 @@ COPY --from=base /app/dist ./dist
 RUN bun add --global serve
 
 # Expose port
-# EXPOSE 3000
+EXPOSE 3000
+
+# Run with dedicated user
+USER 1000
 
 # Run the app
 CMD ["bunx", "serve", "-s", "dist", "-l", "3000"]
