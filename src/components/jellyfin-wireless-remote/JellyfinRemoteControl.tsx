@@ -1,7 +1,5 @@
 import useJellyfinColors from "@/hooks/useJellyfinColors";
 import useJellyfinPlayback, { type PlaybackCommand, type SessionCommand } from "@/hooks/useJellyfinPlayback";
-import { LocalSession } from "@/models/LocalSession";
-import { UserSession } from "@/models/UserSession";
 import { useCurrentSession } from "@/stores/useJellyfinStore";
 import { Center, Flex, Heading, IconButton, Text } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
@@ -18,24 +16,15 @@ const JellyfinRemoteControl = () => {
   const { getCurrentSessionInfo } = useJellyfinPlayback();
   // Simple hook to trigger rerender on button press
   const colors = useJellyfinColors();
-  const userSession = new UserSession(new LocalSession()).getSession();
+  // Playback Session
   const currentSession = useCurrentSession();
-
-
   const { sessionId, serverAddress } = useParams({
     from: '/server/$serverAddress/sessions/$sessionId'
   })
 
-  async function getSession() {
-    if (!userSession) {
-      return null;
-    }
-    const session = await getCurrentSessionInfo(userSession, sessionId, serverAddress);
-    return session;
-  }
   const { refetch } = useQuery({
     queryKey: ['remote-client-session', sessionId],
-    queryFn: getSession,
+    queryFn: () => getCurrentSessionInfo(sessionId, serverAddress),
     enabled: typeof sessionId == 'string'
   })
 
@@ -43,15 +32,11 @@ const JellyfinRemoteControl = () => {
     if (command == 'Stop') {
       if (!window.confirm('This will close the current player, are you sure?')) return;
     }
-    if (userSession) {
-      await playback(serverAddress, userSession, sessionId, command);
-    }
+    await playback(serverAddress, sessionId, command);
     await refetch();
   }
   async function handleSessionCommand(command: SessionCommand) {
-    if (userSession) {
-      await sessionCommand(serverAddress, userSession, sessionId, command);
-    }
+    await sessionCommand(serverAddress, sessionId, command);
     await refetch();
   }
   return <Flex direction='column' gap='2' data-testid='JellyfinRemoteControl'>

@@ -21,7 +21,7 @@ const useJellyfinPlayback = () => {
   const store = useJellyfinStore();
   const navigate = useNavigate();
   const sessionProvider = new UserSession(new LocalSession());
-
+  
   function goBackToLogin(serverAddress: string) {
     sessionProvider.clearSession();
     navigate({
@@ -32,12 +32,16 @@ const useJellyfinPlayback = () => {
     });
   }
 
-  async function playback(serverAddress: string, token: string, sessionId: string, command: PlaybackCommand) {
+  async function playback(serverAddress: string, sessionId: string, command: PlaybackCommand) {
     try {
+      const accessToken = sessionProvider.getSession();
+      if (!accessToken) {
+        throw new Error("Acces token is not availible, try to log in again")
+      }
       const res = await fetch(`${serverAddress}Sessions/${sessionId}/Playing/${command}`, {
         method: 'POST',
         headers: {
-          "X-Emby-Token": token
+          "X-Emby-Token": accessToken
         }
       });
 
@@ -50,12 +54,16 @@ const useJellyfinPlayback = () => {
       console.error("Failed to use playback:", err);
     }
   }
-  async function sessionCommand(serverAddress: string, token: string, sessionId: string, command: SessionCommand) {
+  async function sessionCommand(serverAddress: string, sessionId: string, command: SessionCommand) {
     try {
+      const accessToken = sessionProvider.getSession();
+      if (!accessToken) {
+        throw new Error("Acces token is not availible, try to log in again")
+      }
       const res = await fetch(`${serverAddress}Sessions/${sessionId}/Command/${command}`, {
         method: 'POST',
         headers: {
-          "X-Emby-Token": token
+          "X-Emby-Token": accessToken
         }
       });
       if (res.status === 401) {
@@ -71,9 +79,13 @@ const useJellyfinPlayback = () => {
     }
   }
 
-  async function getPlaybackSessions(accessToken: string, serverUrl: string) {
+  async function getPlaybackSessions(serverUrl: string) {
     try {
-      sessionProvider.setSession(accessToken);
+      const accessToken = sessionProvider.getSession();
+      if (!accessToken) {
+        throw new Error("Acces token is not availible, try to log in again")
+      }
+
       const res = await fetch(`${serverUrl}Sessions`, {
         headers: { "X-Emby-Token": accessToken }
       });
@@ -90,8 +102,12 @@ const useJellyfinPlayback = () => {
       console.error(error);
     }
   }
-  async function getCurrentSessionInfo(accessToken: string, sessionId: string, serverUrl: string) {
+  async function getCurrentSessionInfo(sessionId: string, serverUrl: string) {
     try {
+      const accessToken = sessionProvider.getSession();
+      if (!accessToken) {
+        throw new Error("Acces token is not availible, try to log in again")
+      }
       const response = await fetch(`${serverUrl}Sessions`, {
         headers: { "X-Emby-Token": accessToken }
       });
