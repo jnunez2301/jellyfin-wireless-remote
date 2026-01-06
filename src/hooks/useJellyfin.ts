@@ -1,8 +1,12 @@
 import { INITIAL_CLIENT_INFO } from '@/constants/constants';
 import { useJellyfinStore } from '@/stores/useJellyfinStore';
+import { getHeaders } from '@/utils/api/getHeaders';
 import { Api, Jellyfin, type RecommendedServerInfo } from '@jellyfin/sdk';
+import type {
+  UserDto,
+} from '@jellyfin/sdk/lib/generated-client/models';
+import axios from 'axios';
 import { useEffect } from 'react';
-
 
 
 const useJellyfin = () => {
@@ -33,7 +37,23 @@ const useJellyfin = () => {
       console.error(error);
     }
   }
-    
+
+  async function getCurrentUserInfo(serverAddres: string) {
+    try {
+      const response = await axios.get(`${serverAddres}Users/Me`, {
+        headers: {
+          ...getHeaders()
+        }
+      });
+      if (response.status == 200) {
+        return response.data as UserDto
+      }
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   useEffect(() => {
     // Cleanup
     return () => {
@@ -41,7 +61,7 @@ const useJellyfin = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  return { getServers, getApi }
+  return { getServers, getApi, getCurrentUserInfo }
 }
 
 export default useJellyfin;
