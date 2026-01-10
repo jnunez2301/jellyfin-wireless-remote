@@ -1,5 +1,8 @@
 services:
   web:
+    build:
+      context: .
+      dockerfile: Dockerfile
     environment:
       # If default host is provided on the main page it will fill the form automatically
       # e.g: VITE_JELLYFIN_DEFAULT_HOST=yourjellyfindomain.com
@@ -8,9 +11,6 @@ services:
       # [!] If your server is exposed to the internet it's not recommended to use this option for security reasons since VITE exposes this to the public
       - "${VITE_JELLYFIN_DEFAULT_USERNAME}"
       - "${VITE_JELLYFIN_DEFAULT_PASSWORD}"
-    build:
-      context: .
-      dockerfile: Dockerfile
     ports:
       - "${SERVER_PORT:-3000}:3000"
     container_name: jellyfin_wireless_remote
