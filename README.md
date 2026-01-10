@@ -4,33 +4,74 @@
 
 Jellyfin Wireless Remote is a SO agnostic SPA for remote usage of your Jellyfin instance via Remote Control
 
-> This app was built using [Jellyfin SDK]('https://github.com/jellyfin/jellyfin-sdk-typescript') and [Jellyfin API]('https://api.jellyfin.org/')
+> This app was built using [Jellyfin SDK](https://github.com/jellyfin/jellyfin-sdk-typescript) and [Jellyfin API](https://api.jellyfin.org/)
 
-[Quick demostration Video](https://youtu.be/WuA-TMfj0tQ)
-
-[Demo Webpage](https://jellyfin-wireless-remote.vercel.app/)
+* ~~[Quick demostration Video](https://youtu.be/WuA-TMfj0tQ)~~ ***outdated***
+* [Demo Webpage](https://jellyfin-wireless-remote.vercel.app/)
+* [How to install](#installation)
+* [Extra Config](#configuration)
 
 > Feel free to use the Demo Webpage as your wireless remote, but i would highly recommend to selfhost your own instance for privacy.
 
-## How do i install it?
+## Installation
 
-You must have `docker` or `podman`, since *Docker* is the most popular among devs i will provide a docker guide, but works the same changing the word `podman` for `docker`, indeed i use podman.
+You must have `docker` or `podman`, since _Docker_ is the most popular among devs i will provide a docker guide, but works the same changing the word `podman` for `docker`, indeed i use podman.
+
+### Using Docker Compose  
+
+If you have **docker compose** or **podman compose** installed you can copy the [Production Compose File](./docker-compose.prod.yml) or copy the example bellow
+
+```yml
+services:
+  web:
+    image: ghcr.io/jnunez2301/jellyfin-wireless-remote:latest
+    environment:
+      # If default host is provided on the main page it will fill the form automatically
+      # e.g: VITE_JELLYFIN_DEFAULT_HOST=yourjellyfindomain.com
+      - "${VITE_JELLYFIN_DEFAULT_HOST}"
+      # You can set a default user and password from Jellyfin to trigger auto-login
+      # [!] If your server is exposed to the internet it's not recommended to use this option for security reasons since VITE exposes this to the public
+      - "${VITE_JELLYFIN_DEFAULT_USERNAME}"
+      - "${VITE_JELLYFIN_DEFAULT_PASSWORD}"
+    ports:
+      - "${SERVER_PORT:-8080}:3000"
+    container_name: jellyfin_wireless_remote
+    restart: unless-stopped
+```
+
+### Manually (not recommended anymore)
 
 ```bash
 # Clone the repo
 git clone https://github.com/jnunez2301/jellyfin-wireless-remote.git
 # Go to repo directory
 cd jellyfin-wireless-remote
-
 # build and run detached
 sudo docker compose up -d
 ```
+
+## Configuration
+
 ## How do i change the Port?
 
-By default it runs on 8080 on the host myachine, you can change this port by providing the *env* variable
+By default it runs on 8080 on the host myachine, you can change this port by providing the _env_ variable
+
 ```bash
 SERVER_PORT=3000
 ```
+
+## Can i use a default host/user?
+
+Yes you can provide a default host, user and password you can either create an `.env` file or provide them by *args* in your shell.
+
+
+```bash
+VITE_JELLYFIN_DEFAULT_HOST=127.0.0.1:8096
+# [!] It's highly recommended to only use this for local instances
+VITE_JELLYFIN_DEFAULT_USERNAME=jellyfin_user
+VITE_JELLYFIN_DEFAULT_PASSWORD=jellyfin_password
+```
+
 
 ## Why did you build this?
 
