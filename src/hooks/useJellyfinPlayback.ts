@@ -2,6 +2,7 @@ import { INITIAL_CLIENT_INFO } from '@/constants/constants';
 import { LocalSession } from '@/models/LocalSession';
 import { UserSession } from '@/models/UserSession';
 import { useJellyfinStore } from '@/stores/useJellyfinStore';
+import { getHeaders } from '@/utils/api/getHeaders';
 import type { SessionInfoDto } from '@jellyfin/sdk/lib/generated-client/models';
 import { useNavigate } from '@tanstack/react-router';
 import axios from 'axios';
@@ -36,15 +37,10 @@ const useJellyfinPlayback = () => {
 
   async function playback(serverAddress: string, sessionId: string, command: PlaybackCommand) {
     try {
-      const accessToken = sessionProvider.getSession();
-      if (!accessToken) {
-        throw new Error("Acces token is not availible, try to log in again")
-      }
+
       const res = await fetch(`${serverAddress}Sessions/${sessionId}/Playing/${command}`, {
         method: 'POST',
-        headers: {
-          "X-Emby-Token": accessToken
-        }
+        headers: { ...getHeaders() }
       });
 
       if (!res.ok) {
@@ -58,15 +54,10 @@ const useJellyfinPlayback = () => {
   }
   async function sessionCommand(serverAddress: string, sessionId: string, command: SessionCommand) {
     try {
-      const accessToken = sessionProvider.getSession();
-      if (!accessToken) {
-        throw new Error("Acces token is not availible, try to log in again")
-      }
+
       const res = await fetch(`${serverAddress}Sessions/${sessionId}/Command/${command}`, {
         method: 'POST',
-        headers: {
-          "X-Emby-Token": accessToken
-        }
+        headers: { ...getHeaders() }
       });
       if (res.status === 401) {
         goBackToLogin(serverAddress);
@@ -86,13 +77,8 @@ const useJellyfinPlayback = () => {
 
   async function getPlaybackSessions(serverUrl: string) {
     try {
-      const accessToken = sessionProvider.getSession();
-      if (!accessToken) {
-        throw new Error("Acces token is not availible, try to log in again")
-      }
-
       const res = await axios.get(`${serverUrl}Sessions`, {
-        headers: { "X-Emby-Token": accessToken }
+        headers: { ...getHeaders() }
       });
       if (res.status === 401) {
         goBackToLogin(serverUrl);
@@ -107,7 +93,7 @@ const useJellyfinPlayback = () => {
       });
 
       store.setSessionList(sortedSessionsByPlayStatus);
-      
+
       return res;
     } catch (error) {
       console.error(error);
@@ -115,12 +101,9 @@ const useJellyfinPlayback = () => {
   }
   async function getCurrentSessionInfo(sessionId: string, serverUrl: string) {
     try {
-      const accessToken = sessionProvider.getSession();
-      if (!accessToken) {
-        throw new Error("Acces token is not availible, try to log in again")
-      }
+
       const response = await axios.get(`${serverUrl}Sessions`, {
-        headers: { "X-Emby-Token": accessToken }
+        headers: { ...getHeaders() }
       });
       if (response.status === 401) {
         goBackToLogin(serverUrl);
