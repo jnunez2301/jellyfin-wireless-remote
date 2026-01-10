@@ -1,6 +1,8 @@
+import { VITE_JELLYFIN_DEFAULT_HOST } from '@/environment';
 import useJellyfin from '@/hooks/useJellyfin';
 import { Box, Field, Flex, IconButton, Input, Text } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { BiSearch } from 'react-icons/bi';
@@ -12,9 +14,11 @@ const HostFormSchema = z.object({
 
 export type HostForm = z.infer<typeof HostFormSchema>;
 
+
 const JellyfinHostForm = () => {
   const [loading, setLoading] = useState(false);
   const { getServers } = useJellyfin();
+
   const { register, handleSubmit, formState: { errors, isValid } } = useForm<HostForm>({
     defaultValues: {
       hostUrl: "",
@@ -32,6 +36,16 @@ const JellyfinHostForm = () => {
       setLoading(false);
     }
   }
+
+  useQuery({
+    queryKey: ['jellyfin-default-host'],
+    queryFn: async () => {
+      const response = await getServers(VITE_JELLYFIN_DEFAULT_HOST)
+      return response;
+    },
+    enabled: typeof VITE_JELLYFIN_DEFAULT_HOST != 'undefined'
+  });
+
   return <form onSubmit={handleSubmit(onSubmit)} data-testid='JellyfinHostForm'>
     <Flex direction='column' gap='3' alignItems='center'>
       <Box>
