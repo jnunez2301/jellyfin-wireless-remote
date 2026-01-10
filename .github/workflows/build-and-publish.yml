@@ -60,7 +60,3 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64
-          build-args: |
-            VITE_JELLYFIN_DEFAULT_HOST=${{ secrets.VITE_JELLYFIN_DEFAULT_HOST }}
-            VITE_JELLYFIN_DEFAULT_USERNAME=${{ secrets.VITE_JELLYFIN_DEFAULT_USERNAME }}
-            VITE_JELLYFIN_DEFAULT_PASSWORD=${{ secrets.VITE_JELLYFIN_DEFAULT_PASSWORD }}
