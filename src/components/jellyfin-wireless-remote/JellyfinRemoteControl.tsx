@@ -4,12 +4,13 @@ import { useCurrentSession } from "@/stores/useJellyfinStore";
 import { Center, Flex, Heading, IconButton, Text } from "@chakra-ui/react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
+import { FaFilm } from "react-icons/fa6";
 import { IoVolumeMedium, IoVolumeMute } from "react-icons/io5";
 import { LuArrowLeft } from "react-icons/lu";
 import { PiSpeakerHigh, PiSpeakerLow } from "react-icons/pi";
 import { TiMediaFastForward, TiMediaFastForwardOutline, TiMediaPause, TiMediaPlay, TiMediaRewind, TiMediaRewindOutline, TiMediaStop } from "react-icons/ti";
 
-const BOTTOM_COMMAND_BUTTONS_SIZE = '64px';
+const BOTTOM_COMMAND_BUTTONS_SIZE = '54px';
 
 const JellyfinRemoteControl = () => {
   const { playback, sessionCommand } = useJellyfinPlayback();
@@ -29,8 +30,9 @@ const JellyfinRemoteControl = () => {
     queryKey: ['remote-client-session', sessionId],
     queryFn: () => getCurrentSessionInfo(sessionId, serverAddress),
     enabled: typeof sessionId == 'string',
+    refetchInterval: 5000,
   })
-  
+
   const invalidateQuery = () => queryClient.invalidateQueries({ queryKey: ['remote-client-session', sessionId] });
 
   async function handlePlayback(command: PlaybackCommand) {
@@ -44,12 +46,20 @@ const JellyfinRemoteControl = () => {
     await sessionCommand(serverAddress, sessionId, command);
     invalidateQuery();
   }
-  return <Flex direction='column' gap='2' data-testid='JellyfinRemoteControl'>
-    <Link to=".." >
-      <IconButton variant='ghost'>
-        <LuArrowLeft />
-      </IconButton>
-    </Link>
+  return <Flex direction='column' align='center' gap='2' data-testid='JellyfinRemoteControl'>
+    <Flex w='100%' justify='space-between'>
+      <Link to=".." >
+        <IconButton variant='ghost'>
+          <LuArrowLeft />
+        </IconButton>
+      </Link>
+      <Link to="/server/$serverAddress/sessions/$sessionId/library" params={{ serverAddress: serverAddress, sessionId: sessionId }} >
+        <IconButton variant='ghost' p='3'>
+          Media
+          <FaFilm />
+        </IconButton>
+      </Link>
+    </Flex>
     {/* PLAY BUTTON */}
     <Center>
       <IconButton
@@ -83,7 +93,7 @@ const JellyfinRemoteControl = () => {
     </Flex>
     {/* TODO: Skip intro */}
     {/* COMMAND BUTTONS */}
-    <Flex w='100%' justify='space-evenly' gap='1'>
+    <Flex w='100%' justify='space-between' gap='1'>
       <IconButton w={BOTTOM_COMMAND_BUTTONS_SIZE} variant='subtle' onClick={() => handlePlayback('PreviousTrack')}><TiMediaRewind /></IconButton>
       <IconButton w={BOTTOM_COMMAND_BUTTONS_SIZE} variant='subtle' onClick={() => handleSessionCommand('MoveLeft')}><TiMediaRewindOutline /></IconButton>
       <IconButton w={BOTTOM_COMMAND_BUTTONS_SIZE} variant='subtle' onClick={() => handlePlayback('Stop')}><TiMediaStop /></IconButton>
