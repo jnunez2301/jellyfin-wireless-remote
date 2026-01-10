@@ -1,8 +1,8 @@
+#This is an example file to run compose
 services:
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/jnunez2301/jellyfin-wireless-remote:latest
+    container_name: jellyfin_wireless_remote
     environment:
       # If default host is provided on the main page it will fill the form automatically
       # e.g: VITE_JELLYFIN_DEFAULT_HOST=yourjellyfindomain.com
@@ -12,6 +12,5 @@ services:
       - "${VITE_JELLYFIN_DEFAULT_USERNAME}"
       - "${VITE_JELLYFIN_DEFAULT_PASSWORD}"
     ports:
-      - "${SERVER_PORT:-3000}:3000"
-    container_name: jellyfin_wireless_remote
+      - "${SERVER_PORT:-8080}:3000"
     restart: unless-stopped

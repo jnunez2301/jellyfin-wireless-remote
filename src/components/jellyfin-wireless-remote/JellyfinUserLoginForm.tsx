@@ -1,4 +1,5 @@
 import { PasswordInput } from "@/components/ui/password-input";
+import { VITE_JELLYFIN_DEFAULT_PASSWORD, VITE_JELLYFIN_DEFAULT_USERNAME } from "@/environment";
 import useJellyfin from "@/hooks/useJellyfin";
 import { LocalSession } from "@/models/LocalSession";
 import { UserSession } from "@/models/UserSession";
@@ -7,6 +8,7 @@ import { Field } from "@ark-ui/react";
 import { Box, Flex, IconButton, Input, Text } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getUserApi } from '@jellyfin/sdk/lib/utils/api';
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -36,25 +38,6 @@ const JellyfinUserLoginForm = () => {
   const { serverAddress } = useParams({ from: "/server/$serverAddress" });
   const { getApi } = useJellyfin();
   const store = useJellyfinStore();
-
-  useEffect(() => {
-    const session = new UserSession(new LocalSession()).getSession();
-    if (session) {
-      navigate({
-        to: "/server/$serverAddress/sessions",
-        params: {
-          serverAddress: serverAddress,
-        }
-      })
-    } else {
-      getApi(serverAddress);
-    }
-
-    return () => {
-      store.clearSessionList();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   async function onSubmit(data: LoginForm) {
     setLoading(true);
@@ -86,6 +69,37 @@ const JellyfinUserLoginForm = () => {
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    const session = new UserSession(new LocalSession()).getSession();
+    if (session) {
+      navigate({
+        to: "/server/$serverAddress/sessions",
+        params: {
+          serverAddress: serverAddress,
+        }
+      })
+    } else {
+      getApi(serverAddress);
+    }
+
+    return () => {
+      store.clearSessionList();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useQuery({
+    queryKey: ['jellyfin-default-user'],
+    queryFn: () => {
+      if (store.api) {
+        onSubmit({ username: VITE_JELLYFIN_DEFAULT_USERNAME, password: VITE_JELLYFIN_DEFAULT_PASSWORD })
+      }
+      return store.api;
+    },
+    enabled: store.api != null && typeof VITE_JELLYFIN_DEFAULT_USERNAME != 'undefined' && VITE_JELLYFIN_DEFAULT_PASSWORD != 'undefined',
+  })
+  
   return <form onSubmit={handleSubmit(onSubmit)} data-testid='JellyfinUserLoginForm'>
     <Flex direction='column' gap='3' alignItems='center'>
       <Box w={INPUT_WITH}>

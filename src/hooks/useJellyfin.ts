@@ -22,6 +22,7 @@ const useJellyfin = () => {
       const servers: Array<RecommendedServerInfo> = await jellyfin.discovery.getRecommendedServerCandidates(host);
       // Only display working servers
       store.setServerList(servers.filter(s => s.score >= 0));
+      return servers;
     } catch (error) {
       console.error(error);
       store.setServerList(null);
