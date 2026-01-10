@@ -66,7 +66,7 @@ const useJellyfinMediaManager = ({ serverAddress }: useJellyfinMediaManagerProps
             ...getHeaders()
           },
         }
-      ); 
+      );
       if (response.status != 204) {
         throw new Error("There was a problem trying to get list of seasons and movies");
       }
@@ -82,13 +82,61 @@ const useJellyfinMediaManager = ({ serverAddress }: useJellyfinMediaManagerProps
     }
 
   }
+
+  //  -------- Start of [AI Content] may contain some alucination --------
+  /**
+ * Get all seasons for a TV series
+ * @param seriesId - The ID of the TV series
+ * @returns Promise with axios response containing seasons
+ */
+  async function getSeasons(seriesId: string) {
+    try {
+      const response = await axios.get(`${serverAddress}Shows/${seriesId}/Seasons`, {
+        headers: { ...getHeaders() }
+      });
+
+      if (response.status !== 200) {
+        throw new Error("There was a problem trying to get list of seasons");
+      }
+
+      const data = response.data as BaseItemDtoQueryResult;
+      return (data.Items as BaseItemDto[]) || [];
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  }
+
+  /**
+   * Get all episodes for a specific season
+   * @param seasonId - The ID of the season
+   * @returns Promise with axios response containing episodes
+   */
+  async function getSeasonEpisodes(seasonId: string) {
+    try {
+      const response = await axios.get(`${serverAddress}Items?ParentId=${seasonId}&Fields=Overview`, {
+        headers: { ...getHeaders() }
+      });
+
+      if (response.status !== 200) {
+        throw new Error("There was a problem trying to get list of episodes");
+      }
+
+      const data = response.data as BaseItemDtoQueryResult;
+      return (data.Items as BaseItemDto[]) || [];
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  }
+  //  -------- End of [AI Content] may contain some alucination --------
   useEffect(() => {
     return () => {
       libraryStore.clearLibrary();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serverAddress])
-  return { getLibraries, getEpisodes, playMedia }
+  return { getLibraries, getEpisodes, playMedia, getSeasons, getSeasonEpisodes }
 };
 
 export default useJellyfinMediaManager;

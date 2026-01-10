@@ -14,7 +14,7 @@ const JellyfinLibraryList = ({ library }: { library: BaseItemDto[] | null }) => 
       <Text color='fg.muted'>You don't have any libraries</Text>
     </Flex>
   }
-  return <Flex gap='3' data-testid='JellyfinLibraryList' flexWrap='wrap'>
+  return <Flex gap='3' data-testid='JellyfinLibraryList' flexWrap='wrap' justifyContent='center'>
     {library.map((lib) => (
       <Link key={lib.Id} to='/server/$serverAddress/sessions/$sessionId/library/$libraryId/collectionType/$collectionType' params={{ ...params, libraryId: lib.Id as string, collectionType: lib.CollectionType as string }}>
         <Box p='3' cursor='pointer' transition='all .2s ease-in' backgroundColor={colors.bg} _hover={{

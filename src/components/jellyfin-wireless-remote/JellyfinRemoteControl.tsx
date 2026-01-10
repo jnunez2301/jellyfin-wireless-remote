@@ -30,6 +30,7 @@ const JellyfinRemoteControl = () => {
     queryKey: ['remote-client-session', sessionId],
     queryFn: () => getCurrentSessionInfo(sessionId, serverAddress),
     enabled: typeof sessionId == 'string',
+    refetchInterval: 5000,
   })
 
   const invalidateQuery = () => queryClient.invalidateQueries({ queryKey: ['remote-client-session', sessionId] });
