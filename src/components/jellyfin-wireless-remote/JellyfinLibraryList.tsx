@@ -1,9 +1,11 @@
+import useJellyfinColors from "@/hooks/useJellyfinColors";
 import { Box, Flex, Image, Skeleton, Text } from "@chakra-ui/react";
 import type { BaseItemDto } from "@jellyfin/sdk/lib/generated-client/models";
-import { useParams } from "@tanstack/react-router";
+import { Link, useParams } from "@tanstack/react-router";
 
 const JellyfinLibraryList = ({ library }: { library: BaseItemDto[] | null }) => {
-  const { serverAddress } = useParams({ from: '/server/$serverAddress/sessions/$sessionId/library' });
+  const params = useParams({ from: '/server/$serverAddress/sessions/$sessionId/library' });
+  const colors = useJellyfinColors();
   if (!library) {
     return Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} w='100%' h='100px' />)
   }
@@ -12,16 +14,25 @@ const JellyfinLibraryList = ({ library }: { library: BaseItemDto[] | null }) => 
       <Text color='fg.muted'>You don't have any libraries</Text>
     </Flex>
   }
-  return <div data-testid='JellyfinLibraryList'>
-    {library.map((lib) => (<Flex key={lib.Id}>
-      {/* TODO: Fix image url */}
-      <Image aspectRatio={4 / 3} src={`${serverAddress}/Items/${lib.Id}/Images/Primary?tag=${library[0].ImageTags['Primary']}&maxHeight=500`} />
-      {/* TODO: Wrap with Link to /library/$libraryId */}
-      <Box>
-        <Text>{lib.Name}</Text>
-      </Box>
-    </Flex>))}
-  </div>;
+  return <Flex gap='3' data-testid='JellyfinLibraryList' flexWrap='wrap'>
+    {library.map((lib) => (
+      <Link key={lib.Id} to='/server/$serverAddress/sessions/$sessionId/library/$libraryId/collectionType/$collectionType' params={{ ...params, libraryId: lib.Id as string, collectionType: lib.CollectionType as string }}>
+        <Box p='3' cursor='pointer' transition='all .2s ease-in' backgroundColor={colors.bg} _hover={{
+          opacity: .6,
+          backgroundColor: colors.hoverBg,
+        }}>
+          <Image
+            aspectRatio={16 / 9}
+            w='xs'
+            fit='contain'
+            src={!lib.ImageTags ? '/logo.png' : `${params.serverAddress}Items/${lib.Id}/Images/Primary?tag=${lib.ImageTags?.Primary}&maxHeight=500`}
+            alt={`Image for library: ${lib.Name}`}
+          />
+          <Text textAlign='center' color='white' fontWeight='bold' my='1'>{lib.Name}</Text>
+        </Box>
+      </Link>
+    ))}
+  </Flex>;
 };
 
 export default JellyfinLibraryList;

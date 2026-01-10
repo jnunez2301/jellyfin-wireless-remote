@@ -46,9 +46,8 @@ const useJellyfin = () => {
           ...getHeaders()
         }
       });
-      if (response.status == 200) {
-        return response.data as UserDto
-      }
+
+      return response.data as UserDto
 
     } catch (error) {
       console.error(error);

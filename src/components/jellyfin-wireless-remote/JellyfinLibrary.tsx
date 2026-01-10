@@ -35,7 +35,6 @@ const JellyfinLibrary = () => {
     },
     enabled: currentUserId != null,
   });
-  console.log(store.currentLibrary)
   return <Flex direction='column' gap='2' data-testid='JellyfinLibrary'>
     <Link to=".." >
       <IconButton variant='ghost'>
