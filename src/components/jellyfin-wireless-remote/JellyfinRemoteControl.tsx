@@ -4,6 +4,7 @@ import { useCurrentSession } from "@/stores/useJellyfinStore";
 import { Center, Flex, Heading, IconButton, Text } from "@chakra-ui/react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
+import { FaFilm } from "react-icons/fa6";
 import { IoVolumeMedium, IoVolumeMute } from "react-icons/io5";
 import { LuArrowLeft } from "react-icons/lu";
 import { PiSpeakerHigh, PiSpeakerLow } from "react-icons/pi";
@@ -30,7 +31,7 @@ const JellyfinRemoteControl = () => {
     queryFn: () => getCurrentSessionInfo(sessionId, serverAddress),
     enabled: typeof sessionId == 'string',
   })
-  
+
   const invalidateQuery = () => queryClient.invalidateQueries({ queryKey: ['remote-client-session', sessionId] });
 
   async function handlePlayback(command: PlaybackCommand) {
@@ -45,11 +46,19 @@ const JellyfinRemoteControl = () => {
     invalidateQuery();
   }
   return <Flex direction='column' gap='2' data-testid='JellyfinRemoteControl'>
-    <Link to=".." >
-      <IconButton variant='ghost'>
-        <LuArrowLeft />
-      </IconButton>
-    </Link>
+    <Flex justify='space-between'>
+      <Link to=".." >
+        <IconButton variant='ghost'>
+          <LuArrowLeft />
+        </IconButton>
+      </Link>
+      <Link to="/server/$serverAddress/sessions/$sessionId/library" params={{ serverAddress: serverAddress, sessionId: sessionId }} >
+        <IconButton variant='ghost' p='3'>
+          Media
+          <FaFilm />
+        </IconButton>
+      </Link>
+    </Flex>
     {/* PLAY BUTTON */}
     <Center>
       <IconButton

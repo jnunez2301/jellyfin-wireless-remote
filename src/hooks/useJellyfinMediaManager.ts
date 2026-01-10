@@ -1,17 +1,18 @@
+import useLibraryStore from "@/stores/useLibraryStore";
 import { getHeaders } from "@/utils/api/getHeaders";
 import type {
   BaseItemDtoQueryResult
 } from '@jellyfin/sdk/lib/generated-client/models';
 import axios from "axios";
+import { useEffect } from "react";
 
 interface useJellyfinMediaManagerProps {
   serverAddress: string;
-  userId: string;
 }
 
-const useJellyfinMediaManager = ({ serverAddress, userId }: useJellyfinMediaManagerProps) => {
-
-  async function getLibraries() {
+const useJellyfinMediaManager = ({ serverAddress }: useJellyfinMediaManagerProps) => {
+  const store = useLibraryStore();
+  async function getLibraries(userId: string) {
     try {
       const response = await axios.get(`${serverAddress}Users/${userId}/Views`, {
         headers: {
@@ -20,15 +21,22 @@ const useJellyfinMediaManager = ({ serverAddress, userId }: useJellyfinMediaMana
       });
       if (response.status == 200) {
         const data = response.data as BaseItemDtoQueryResult;
-        const movies = data.Items?.filter(item => item.Type == 'Movie');
-        const series = data.Items?.filter(item => item.Type == 'Series');
         // This is just a sample code later on i will replace this with the right logic
-        console.log({ movies, series });
+        if (data.Items) {
+          store.setCurrentLibrary(data.Items)
+        }
+        return data;
       }
     } catch (error) {
       console.error(error);
     }
   }
+  useEffect(() => {
+    return () => {
+      store.clearLibrary();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serverAddress])
   return { getLibraries }
 };
 
