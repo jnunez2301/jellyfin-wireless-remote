@@ -1,6 +1,7 @@
 #This is an example file to run compose
 services:
   web:
+    image: ghcr.io/jnunez2301/jellyfin-wireless-remote:latest
     container_name: jellyfin_wireless_remote
     environment:
       # If default host is provided on the main page it will fill the form automatically
@@ -10,7 +11,6 @@ services:
       # [!] If your server is exposed to the internet it's not recommended to use this option for security reasons since VITE exposes this to the public
       - "${VITE_JELLYFIN_DEFAULT_USERNAME}"
       - "${VITE_JELLYFIN_DEFAULT_PASSWORD}"
-    image: ghcr.io/jnunez2301/jellyfin-wireless-remote:latest
     ports:
       - "${SERVER_PORT:-8080}:3000"
     restart: unless-stopped
