@@ -1,9 +1,9 @@
-name: Build and Publish Container (dev)
+name: Build and Publish Container (main)
 
 on:
   push:
     branches:
-      - dev
+      - main
     tags:
       - 'v*'
 
@@ -14,6 +14,7 @@ env:
 jobs:
   docker:
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
       packages: write
@@ -26,6 +27,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Log in to Container Registry
+        if: github.event_name == 'push'
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
@@ -38,22 +40,25 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            # Dev branch tags
-            type=ref,event=branch
-            type=sha,prefix=dev-
+            # PR builds (no publishing)
+            type=ref,event=pr
+            type=sha,event=pr
 
-            # Pre-release marker
-            type=raw,value=beta
+            # Main branch and releases
+            type=ref,event=branch
+            type=sha,prefix=main-
+            type=raw,value=latest,enable={{is_default_branch}}
 
             # Version tags (only when pushing v*)
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-      - name: Build and push Docker image
+
+      - name: Build Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: true
+          push: ${{ github.event_name == 'push' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
