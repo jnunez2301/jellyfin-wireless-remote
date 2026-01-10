@@ -39,7 +39,7 @@ services:
     restart: unless-stopped
 ```
 
-### Manually (not recommended anymore)
+### Manually
 
 ```bash
 # Clone the repo
