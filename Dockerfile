@@ -1,11 +1,41 @@
-FROM docker.io/oven/bun:slim
+# -----------------------
+# Build stage
+# -----------------------
+FROM docker.io/oven/bun:slim AS base
+
+# Set working directory
+WORKDIR /app
+
+# Copy dependency files first for better caching
+COPY bun.lock package.json ./
+
+# Install dependencies
+RUN bun install --frozen-lockfile
+
+# Copy the rest of the source code
+COPY . .
+
+# Build the Vite app
+RUN bun run build
+
+# -----------------------
+# Runtime stage
+# -----------------------
+FROM docker.io/oven/bun:slim AS runner
 
 WORKDIR /app
 
-COPY bun.lock package.json ./
+# Copy only built files
+COPY --from=base /app/dist ./dist
 
-RUN bun install --frozen-lockfile
+# Install serve globally
+RUN bun add --global serve
 
-COPY . .
+# Expose port
+EXPOSE 3000
 
-CMD ["bun", "run", "dev", "--port", "3000", "--host", "0.0.0.0"]
+# Run with dedicated user
+USER 1000
+
+# Run the app
+CMD ["bunx", "serve", "-s", "dist", "-l", "3000"]
