@@ -33,7 +33,6 @@ const JellyfinServerSelector = () => {
       <Text fontSize='small' color='fg.error' textAlign='center' my='3'>There is no servers availible, try using other url</Text>
     </Header>
   }
-
   return <Header>
 
     {store.serverList.map((server) => (

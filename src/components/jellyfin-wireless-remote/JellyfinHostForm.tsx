@@ -1,19 +1,40 @@
-import { VITE_JELLYFIN_DEFAULT_HOST } from '@/environment';
 import useJellyfin from '@/hooks/useJellyfin';
 import { Box, Field, Flex, IconButton, Input, Text } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { BiSearch } from 'react-icons/bi';
 import * as z from 'zod';
 
 const HostFormSchema = z.object({
-  hostUrl: z.url()
+  hostUrl: z.string()
+    .min(1, "Host URL is required")
+    .transform((value) => {
+      // Trim whitespace
+      const trimmed = value.trim();
+
+      // If it already has a protocol (http:// or https://), return as is
+      if (/^https?:\/\//i.test(trimmed)) {
+        return trimmed;
+      }
+
+      // Otherwise, prepend http://
+      return `http://${trimmed}`;
+    })
+    .refine((value) => {
+      // Validate that the final result is a valid URL
+      try {
+        new URL(value);
+        return true;
+      } catch {
+        return false;
+      }
+    }, {
+      message: "Please enter a valid host address (e.g., 192.168.50.66:8096 or domain.com)"
+    })
 })
 
 export type HostForm = z.infer<typeof HostFormSchema>;
-
 
 const JellyfinHostForm = () => {
   const [loading, setLoading] = useState(false);
@@ -36,15 +57,6 @@ const JellyfinHostForm = () => {
       setLoading(false);
     }
   }
-
-  useQuery({
-    queryKey: ['jellyfin-default-host'],
-    queryFn: async () => {
-      const response = await getServers(VITE_JELLYFIN_DEFAULT_HOST)
-      return response;
-    },
-    enabled: typeof VITE_JELLYFIN_DEFAULT_HOST != 'undefined'
-  });
 
   return <form onSubmit={handleSubmit(onSubmit)} data-testid='JellyfinHostForm'>
     <Flex direction='column' gap='3' alignItems='center'>
