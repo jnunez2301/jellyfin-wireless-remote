@@ -7,7 +7,7 @@ Jellyfin Wireless Remote is a SO agnostic SPA for remote usage of your Jellyfin 
 > This app was built using [Jellyfin SDK](https://github.com/jellyfin/jellyfin-sdk-typescript) and [Jellyfin API](https://api.jellyfin.org/)
 
 * ~~[Quick demostration Video](https://youtu.be/WuA-TMfj0tQ)~~ ***outdated***
-* [Demo Webpage](https://jellyfin-wireless-remote.vercel.app/)
+* [Demo Webpage](https://jellyfin-wireless-remote.vercel.app/)  
 * [How to install](#installation)
 * [Extra Config](#configuration)
 
@@ -81,7 +81,7 @@ Every day i get in the threadmill to walk at least 30-45 minutes, but i always p
 
 Yes i did use AI i used generative AI for the logo which i plan to change and pay a real artist for a more personalized picture.
 
-I wrote 90% of the code and only a few AI code is here which i checked before placing it in to my code, every code that was wrriten purely by AI has the text `"// -------- [AI Content] may contain some alucination --------` to indicate that i used AI for that specific component.
+I wrote 90% of the code and only a few AI code is here which i checked before placing it in to my code, every code that was wrriten purely by AI has the text `// -------- [AI Content] may contain some alucination --------` to indicate that i used AI for that specific component.
 
 I tried my best to keep this code as clean as possible, so i hope it can be manteined with ease for me or other devs.
 
