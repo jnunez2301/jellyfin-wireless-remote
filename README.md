@@ -7,11 +7,15 @@ Jellyfin Wireless Remote is a SO agnostic SPA for remote usage of your Jellyfin 
 > This app was built using [Jellyfin SDK](https://github.com/jellyfin/jellyfin-sdk-typescript) and [Jellyfin API](https://api.jellyfin.org/)
 
 * ~~[Quick demostration Video](https://youtu.be/WuA-TMfj0tQ)~~ ***outdated***
-* [Demo Webpage](https://jellyfin-wireless-remote.vercel.app/)
+* [Demo Webpage](https://jellyfin-wireless-remote.vercel.app/)  
 * [How to install](#installation)
 * [Extra Config](#configuration)
 
 > Feel free to use the Demo Webpage as your wireless remote, but i would highly recommend to selfhost your own instance for privacy.
+
+## Why would i want to use this there is already official app for this?
+
+I know there is an official app for this but i found it to be a bit clunky and not as user friendly as i would like it to be, it's not built in many other Jellyfin Clients so this is more like an universal remote that can be used on any device. Just like your TV remote you already have one but other TV's don't have the same remote and features.
 
 ## Installation
 
@@ -72,6 +76,29 @@ VITE_JELLYFIN_DEFAULT_USERNAME=jellyfin_user
 VITE_JELLYFIN_DEFAULT_PASSWORD=jellyfin_password
 ```
 
+## Android
+
+For android devices we are using `@capacitor` to build the app, so you will need to have `android-sdk` installed and configured on your machine.
+
+I highly recommend using *Android Studio* to build and run the app.
+
+Anyways we have already prebuilt *APK*s at [Releases](/releases) page.
+
+But if you want to build your own you can run this scripts
+
+```bash
+# At the root of the project just run
+bun run build:android
+# Then if you have Android Studio opened it will promp to open it on the /android folder, if not you can open it manually
+
+# Then just run the assembleRelease to get the APK
+./gradlew assembleRelease
+# The APK will be located at /android/app/build/outputs/apk/release/app-release.apk
+```
+
+## iOS Support
+
+I do not own an Apple Device i maybe never will so i can't provide support for iOS devices, if you want to support it you can fork this repo and add iOS support.
 
 ## Why did you build this?
 
@@ -81,12 +108,8 @@ Every day i get in the threadmill to walk at least 30-45 minutes, but i always p
 
 Yes i did use AI i used generative AI for the logo which i plan to change and pay a real artist for a more personalized picture.
 
-I wrote 90% of the code and only a few AI code is here which i checked before placing it in to my code, every code that was wrriten purely by AI has the text `"// -------- [AI Content] may contain some alucination --------` to indicate that i used AI for that specific component.
+I wrote 90% of the code and only a few AI code is here which i checked before placing it in to my code, every code that was wrriten purely by AI has the text `// -------- [AI Content] may contain some alucination --------` to indicate that i used AI for that specific component.
 
 I tried my best to keep this code as clean as possible, so i hope it can be manteined with ease for me or other devs.
 
 And no, this app was not vibe coded i'm not a huge fan of vibe coding things.
-
-## And who are you?
-
-I'm a Software Engineer that has been working for the past 3 years in this field, huge fan of selfhosting and besides other things myself which i go outside as the name of "roxc" or "jnunez" on my github account.
