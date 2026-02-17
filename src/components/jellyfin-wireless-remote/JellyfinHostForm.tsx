@@ -66,7 +66,7 @@ const JellyfinHostForm = () => {
             Host Address
           </Field.Label>
           <Field.HelperText>Your host must be the ip or domain you assigned to, remember that the default port is 8096</Field.HelperText>
-          <Input type='url' placeholder="Type your host eg: http://127.0.0.1:8096" {...register('hostUrl')} variant='outline' borderColor={!isValid && errors.hostUrl ? 'red' : 'inherit'} />
+          <Input min={1} max={255} placeholder="Type your host eg: http://127.0.0.1:8096" {...register('hostUrl')} variant='outline' borderColor={!isValid && errors.hostUrl ? 'red' : 'inherit'} />
         </Field.Root>
         {!isValid && errors.hostUrl && <Text color='red.500' fontSize='sm' textAlign='center'>You must type a valid url</Text>}
       </Box>
