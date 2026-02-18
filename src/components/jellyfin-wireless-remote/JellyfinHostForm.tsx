@@ -1,28 +1,25 @@
 import useJellyfin from '@/hooks/useJellyfin';
+import { type RecentServerEntry, RecentServers } from '@/models/RecentServers';
 import { Box, Field, Flex, IconButton, Input, Text } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { BiSearch } from 'react-icons/bi';
+import { BiSearch, BiX } from 'react-icons/bi';
 import * as z from 'zod';
+
+const recentServers = new RecentServers();
 
 const HostFormSchema = z.object({
   hostUrl: z.string()
     .min(1, "Host URL is required")
     .transform((value) => {
-      // Trim whitespace
       const trimmed = value.trim();
-
-      // If it already has a protocol (http:// or https://), return as is
       if (/^https?:\/\//i.test(trimmed)) {
         return trimmed;
       }
-
-      // Otherwise, prepend http://
       return `http://${trimmed}`;
     })
     .refine((value) => {
-      // Validate that the final result is a valid URL
       try {
         new URL(value);
         return true;
@@ -38,24 +35,51 @@ export type HostForm = z.infer<typeof HostFormSchema>;
 
 const JellyfinHostForm = () => {
   const [loading, setLoading] = useState(false);
+  const [suggestions, setSuggestions] = useState<RecentServerEntry[]>([]);
   const { getServers } = useJellyfin();
 
-  const { register, handleSubmit, formState: { errors, isValid } } = useForm<HostForm>({
+  const { register, handleSubmit, setValue, formState: { errors, isValid } } = useForm<HostForm>({
     defaultValues: {
       hostUrl: "",
     },
     resolver: zodResolver(HostFormSchema),
     mode: 'onChange',
-  })
+  });
+
+  useEffect(() => {
+    setSuggestions(recentServers.getServers());
+  }, []);
+
   async function onSubmit(data: HostForm) {
-    setLoading(true)
+    setLoading(true);
     try {
-      await getServers(data.hostUrl);
+      const found = await getServers(data.hostUrl);
+      if (found.length > 0) {
+        recentServers.addServer(data.hostUrl);
+      }
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleSuggestionClick(url: string) {
+    setValue('hostUrl', url, { shouldValidate: true });
+    handleSubmit(onSubmit)();
+  }
+
+  function handleRemoveSuggestion(e: React.MouseEvent, url: string) {
+    e.stopPropagation();
+    recentServers.removeServer(url);
+    setSuggestions(recentServers.getServers());
+  }
+
+  function formatDate(ts: number): string {
+    return new Intl.DateTimeFormat(undefined, {
+      month: 'short', day: 'numeric',
+      hour: '2-digit', minute: '2-digit',
+    }).format(new Date(ts));
   }
 
   return <form onSubmit={handleSubmit(onSubmit)} data-testid='JellyfinHostForm'>
@@ -70,6 +94,43 @@ const JellyfinHostForm = () => {
         </Field.Root>
         {!isValid && errors.hostUrl && <Text color='red.500' fontSize='sm' textAlign='center'>You must type a valid url</Text>}
       </Box>
+
+      {suggestions.length > 0 && (
+        <Box w='100%'>
+          <Text fontSize='xs' color='fg.muted' mb='1'>Recent servers</Text>
+          <Flex direction='column' gap='1'>
+            {suggestions.map(({ url, addedAt }) => (
+              <Flex
+                key={url}
+                align='center'
+                justify='space-between'
+                px='3'
+                py='2'
+                borderRadius='md'
+                border='1px solid'
+                borderColor='border.subtle'
+                cursor='pointer'
+                _hover={{ bg: 'bg.subtle' }}
+                onClick={() => handleSuggestionClick(url)}
+              >
+                <Flex direction='column' gap='0' overflow='hidden'>
+                  <Text fontSize='sm' truncate>{url}</Text>
+                  <Text fontSize='xs' color='fg.muted'>{formatDate(addedAt)}</Text>
+                </Flex>
+                <IconButton
+                  aria-label='Remove server'
+                  size='xs'
+                  variant='ghost'
+                  onClick={(e) => handleRemoveSuggestion(e, url)}
+                >
+                  <BiX />
+                </IconButton>
+              </Flex>
+            ))}
+          </Flex>
+        </Box>
+      )}
+
       <IconButton type='submit' variant='subtle' disabled={!isValid} loading={loading} p='5'>
         <BiSearch />
         Find Server

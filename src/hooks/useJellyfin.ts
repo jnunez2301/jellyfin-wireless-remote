@@ -12,20 +12,21 @@ import { useEffect } from 'react';
 const useJellyfin = () => {
   const store = useJellyfinStore();
 
-  async function getServers(host: string) {
+  async function getServers(host: string): Promise<RecommendedServerInfo[]> {
     try {
       if (!host) {
         store.setServerList(null);
-        return;
+        return [];
       }
       const jellyfin = new Jellyfin(INITIAL_CLIENT_INFO);
       const servers: Array<RecommendedServerInfo> = await jellyfin.discovery.getRecommendedServerCandidates(host);
-      // Only display working servers
-      store.setServerList(servers.filter(s => s.score >= 0));
-      return servers;
+      const working = servers.filter(s => s.score >= 0);
+      store.setServerList(working);
+      return working;
     } catch (error) {
       console.error(error);
       store.setServerList(null);
+      return [];
     }
   }
 
