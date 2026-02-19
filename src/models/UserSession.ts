@@ -11,8 +11,8 @@ export class UserSession {
     return this.provider.getSession();
   }
 
-  setSession(session: string): void {
-    this.provider.setSession(session);
+  setSession(session: string, rememberMe?: boolean): void {
+    this.provider.setSession(session, rememberMe);
   }
 
   clearSession(): void {

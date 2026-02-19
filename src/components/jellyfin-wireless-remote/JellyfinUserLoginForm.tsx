@@ -1,23 +1,22 @@
 import { PasswordInput } from "@/components/ui/password-input";
-import { VITE_JELLYFIN_DEFAULT_PASSWORD, VITE_JELLYFIN_DEFAULT_USERNAME } from "@/environment";
 import useJellyfin from "@/hooks/useJellyfin";
 import { LocalSession } from "@/models/LocalSession";
 import { UserSession } from "@/models/UserSession";
 import { useJellyfinStore } from "@/stores/useJellyfinStore";
 import { Field } from "@ark-ui/react";
-import { Box, Flex, IconButton, Input, Text } from "@chakra-ui/react";
+import { Box, Flex, IconButton, Input, Text, Checkbox } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getUserApi } from '@jellyfin/sdk/lib/utils/api';
-import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { BiKey } from "react-icons/bi";
 import * as z from 'zod';
 
 const LoginFormSchema = z.object({
   username: z.string().min(1).max(255),
   password: z.string().min(1).max(255),
+  rememberMe: z.boolean().default(false).optional(),
 })
 
 export type LoginForm = z.infer<typeof LoginFormSchema>;
@@ -25,10 +24,11 @@ const INPUT_WITH = '280px';
 
 const JellyfinUserLoginForm = () => {
   const [loading, setLoading] = useState(false);
-  const { register, handleSubmit, formState: { errors, isValid } } = useForm<LoginForm>({
+  const { register, control, handleSubmit, formState: { errors, isValid } } = useForm<LoginForm>({
     defaultValues: {
       username: "",
       password: '',
+      rememberMe: false,
     },
     resolver: zodResolver(LoginFormSchema),
     mode: 'onChange',
@@ -89,17 +89,7 @@ const JellyfinUserLoginForm = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useQuery({
-    queryKey: ['jellyfin-default-user'],
-    queryFn: () => {
-      if (store.api) {
-        onSubmit({ username: VITE_JELLYFIN_DEFAULT_USERNAME, password: VITE_JELLYFIN_DEFAULT_PASSWORD })
-      }
-      return store.api;
-    },
-    enabled: store.api != null && typeof VITE_JELLYFIN_DEFAULT_USERNAME != 'undefined' && VITE_JELLYFIN_DEFAULT_PASSWORD != 'undefined',
-  })
-  
+
   return <form onSubmit={handleSubmit(onSubmit)} data-testid='JellyfinUserLoginForm'>
     <Flex direction='column' gap='3' alignItems='center'>
       <Box w={INPUT_WITH}>
@@ -121,6 +111,27 @@ const JellyfinUserLoginForm = () => {
         </Field.Root>
         {!isValid && errors.username && <Text color='red.500' fontSize='sm' textAlign='center'>You must provide a valid password</Text>}
       </Box>
+      <Box w={INPUT_WITH}>
+        <Controller
+          control={control}
+          name="rememberMe"
+          render={({ field: { onChange, value, ref, disabled } }) => (
+            <Checkbox.Root
+              checked={value}
+              onCheckedChange={({ checked }) => onChange(!!checked)}
+              disabled={disabled}
+              ref={ref}
+              variant='solid'
+            >
+              <Checkbox.HiddenInput />
+              <Checkbox.Control />
+              <Checkbox.Label>Remember me</Checkbox.Label>
+            </Checkbox.Root>
+          )}
+        />
+        {!isValid && errors.rememberMe && <Text color='red.500' fontSize='sm' textAlign='center'>You must provide a valid remember me</Text>}
+      </Box>
+
       <IconButton w={INPUT_WITH} disabled={!isValid} type="submit" loading={loading}>
         <BiKey />
         Login

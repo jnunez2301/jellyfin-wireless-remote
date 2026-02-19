@@ -11,3 +11,4 @@ export const INITIAL_CLIENT_INFO = {
 }
 
 export const JELLYFIN_ACCESS_TOKEN_KEY = 'jellyfin-wireless-remote-access-token';
+export const JELLYFIN_RECENT_SERVERS_KEY = 'jellyfin-wireless-remote-recent-servers';
