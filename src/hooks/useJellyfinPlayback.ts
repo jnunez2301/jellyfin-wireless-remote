@@ -1,8 +1,8 @@
 import { INITIAL_CLIENT_INFO } from '@/constants/constants';
-import { LocalSession } from '@/models/LocalSession';
-import { UserSession } from '@/models/UserSession';
+import { LocalSession } from '@/helpers/auth/LocalSession';
+import { UserSession } from '@/helpers/auth/UserSession';
 import { useJellyfinStore } from '@/stores/useJellyfinStore';
-import { getHeaders } from '@/utils/api/getHeaders';
+import { getHeaders } from '@/helpers/api/getHeaders';
 import type { SessionInfoDto } from '@jellyfin/sdk/lib/generated-client/models';
 import { useNavigate } from '@tanstack/react-router';
 import axios from 'axios';

@@ -1,5 +1,5 @@
 import useJellyfin from '@/hooks/useJellyfin';
-import { type RecentServerEntry, RecentServers } from '@/models/RecentServers';
+import { type RecentServerEntry, RecentServers } from '@/helpers/RecentServers';
 import { Box, Field, Flex, IconButton, Input, Text } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';

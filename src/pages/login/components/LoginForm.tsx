@@ -1,7 +1,7 @@
 import { PasswordInput } from "@/components/ui/password-input";
 import useJellyfin from "@/hooks/useJellyfin";
-import { LocalSession } from "@/models/LocalSession";
-import { UserSession } from "@/models/UserSession";
+import { LocalSession } from "@/helpers/auth/LocalSession";
+import { UserSession } from "@/helpers/auth/UserSession";
 import { useJellyfinStore } from "@/stores/useJellyfinStore";
 import { Field } from "@ark-ui/react";
 import { Box, Flex, IconButton, Input, Text, Checkbox } from "@chakra-ui/react";

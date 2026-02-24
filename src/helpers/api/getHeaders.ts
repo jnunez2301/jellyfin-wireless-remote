@@ -1,5 +1,5 @@
-import { LocalSession } from "@/models/LocalSession";
-import { UserSession } from "@/models/UserSession";
+import { LocalSession } from "@/helpers/auth/LocalSession";
+import { UserSession } from "@/helpers/auth/UserSession";
 
 export function getHeaders() {
   try {
