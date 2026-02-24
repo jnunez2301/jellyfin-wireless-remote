@@ -2,7 +2,7 @@ import { Box, Flex, Heading, Image } from "@chakra-ui/react";
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 
-const JellyfinHeader = ({ children }: { children: ReactNode }) => {
+const Header = ({ children }: { children: ReactNode }) => {
   return <Flex direction='column' justify='center' gap='3' p='3' alignItems='center' mt='12'>
     <Link to='/'>
       <Flex direction='column' alignItems='center' gap='1' mb='5'>
@@ -16,4 +16,4 @@ const JellyfinHeader = ({ children }: { children: ReactNode }) => {
   </Flex>;
 };
 
-export default JellyfinHeader;
+export default Header;

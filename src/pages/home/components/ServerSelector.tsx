@@ -12,7 +12,7 @@ const Header = ({ children }: { children: ReactNode }) => {
   </Flex>
 }
 
-const JellyfinServerSelector = () => {
+const ServerSelector = () => {
   const store = useJellyfinStore();
   const {
     accent,
@@ -91,4 +91,4 @@ const JellyfinServerSelector = () => {
   </Header>;
 };
 
-export default JellyfinServerSelector;
+export default ServerSelector;

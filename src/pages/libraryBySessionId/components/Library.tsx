@@ -6,9 +6,9 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
 import { useState } from "react";
 import { LuArrowLeft } from "react-icons/lu";
-import JellyfinLibraryList from "./JellyfinLibraryList";
+import LibraryList from "./LibraryList";
 
-const JellyfinLibrary = () => {
+const Library = () => {
   const { serverAddress } = useParams({ from: '/server/$serverAddress/sessions/$sessionId/library' });
   const { getLibraries } = useJellyfinMediaManager({ serverAddress: serverAddress });
   const { getCurrentUserInfo } = useJellyfin();
@@ -35,14 +35,14 @@ const JellyfinLibrary = () => {
     },
     enabled: currentUserId != null,
   });
-  return <Flex direction='column' gap='2' data-testid='JellyfinLibrary'>
+  return <Flex direction='column' gap='2' data-testid='Library'>
     <Link to=".." >
       <IconButton variant='ghost'>
         <LuArrowLeft />
       </IconButton>
     </Link>
-    <JellyfinLibraryList library={store.currentLibrary} />
+    <LibraryList library={store.currentLibrary} />
   </Flex>;
 };
 
-export default JellyfinLibrary;
+export default Library;

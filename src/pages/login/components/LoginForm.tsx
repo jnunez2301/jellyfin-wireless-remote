@@ -19,12 +19,12 @@ const LoginFormSchema = z.object({
   rememberMe: z.boolean().default(false).optional(),
 })
 
-export type LoginForm = z.infer<typeof LoginFormSchema>;
+export type iLoginForm = z.infer<typeof LoginFormSchema>;
 const INPUT_WITH = '280px';
 
-const JellyfinUserLoginForm = () => {
+const LoginForm = () => {
   const [loading, setLoading] = useState(false);
-  const { register, control, handleSubmit, formState: { errors, isValid } } = useForm<LoginForm>({
+  const { register, control, handleSubmit, formState: { errors, isValid } } = useForm<iLoginForm>({
     defaultValues: {
       username: "",
       password: '',
@@ -39,7 +39,7 @@ const JellyfinUserLoginForm = () => {
   const { getApi } = useJellyfin();
   const store = useJellyfinStore();
 
-  async function onSubmit(data: LoginForm) {
+  async function onSubmit(data: iLoginForm) {
     setLoading(true);
     store.clearSessionList();
     setLoginError('');
@@ -141,4 +141,4 @@ const JellyfinUserLoginForm = () => {
   </form>;
 };
 
-export default JellyfinUserLoginForm;
+export default LoginForm;

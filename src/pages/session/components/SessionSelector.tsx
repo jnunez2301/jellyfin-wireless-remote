@@ -1,3 +1,4 @@
+import LogoutButton from "@/components/LogoutButton";
 import useJellyfinColors from "@/hooks/useJellyfinColors";
 import useJellyfinPlayback from "@/hooks/useJellyfinPlayback";
 import { useJellyfinStore } from "@/stores/useJellyfinStore";
@@ -7,7 +8,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useParams } from "@tanstack/react-router";
 import { type ReactNode } from "react";
 import { LuArrowLeft } from "react-icons/lu";
-import LogoutButton from "../LogoutButton";
 
 const Header = ({ children }: { children: ReactNode }) => {
   return <>
@@ -32,7 +32,7 @@ const EmptySessionComponent = ({ serverAddress }: { serverAddress: string }) => 
     </Button>
   </Flex>
 }
-const JellyfinSessionSelector = () => {
+const SessionSelector = () => {
   const colors = useJellyfinColors();
   const store = useJellyfinStore();
   const { getPlaybackSessions } = useJellyfinPlayback();
@@ -69,10 +69,10 @@ const JellyfinSessionSelector = () => {
       }
     })
   }
-  return <Flex direction='column' data-testid='JellyfinSessionSelector'>
+  return <Flex direction='column' data-testid='SessionSelector'>
     <Header>
 
-      <Stack data-testid="JellyfinSessionSelector">
+      <Stack data-testid="SessionSelector">
         {store.sessionList.map((session) => {
           const isPlaying = Boolean(session.NowPlayingItem)
 
@@ -132,4 +132,4 @@ const JellyfinSessionSelector = () => {
   </Flex>;
 };
 
-export default JellyfinSessionSelector;
+export default SessionSelector;

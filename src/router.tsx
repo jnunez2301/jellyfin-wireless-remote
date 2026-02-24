@@ -1,16 +1,15 @@
 import { Button } from "@chakra-ui/react";
 import { createRootRoute, createRoute, createRouter, Link, Outlet } from "@tanstack/react-router";
-import JellyfinHeader from "./components/jellyfin-wireless-remote/JellyfinHeader";
-import JellyfinHostForm from "./components/jellyfin-wireless-remote/JellyfinHostForm";
-import JellyfinLibrary from "./components/jellyfin-wireless-remote/JellyfinLibrary";
-import JellyfinMediaByLibraryId from "./components/jellyfin-wireless-remote/JellyfinMediaByLibraryId";
-import JellyfinRemoteControl from "./components/jellyfin-wireless-remote/JellyfinRemoteControl";
-import JellyfinServerSelector from "./components/jellyfin-wireless-remote/JellyfinServerSelector";
-import JellyfinSessionSelector from "./components/jellyfin-wireless-remote/JellyfinSessionSelector";
-import JellyfinUserLoginForm from "./components/jellyfin-wireless-remote/JellyfinUserLoginForm";
+import MediaByLibraryId from "./pages/libraryBySessionId/components/MediaByLibraryId";
+import Home from "./pages/home/HomePage";
+import LibraryBySessionIdPage from "./pages/libraryBySessionId/LibraryBySessionIdPage";
+import LoginPage from "./pages/login/LoginPage";
+import SessionPage from "./pages/session/SessionPage";
+import SessionByIdPage from "./pages/sessionById/SessionByIdPage";
+import Header from "./components/Header";
 
 const rootRoute = createRootRoute({
-  component: () => <JellyfinHeader><Outlet /></JellyfinHeader>,
+  component: () => <Header><Outlet /></Header>,
   notFoundComponent: () => (<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: "45vh", gap: '.3rem' }}>
     <p> 404 Whoops this route does not exist</p>
     <Link to='/'>
@@ -24,40 +23,37 @@ const rootRoute = createRootRoute({
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
-  component: () => <>
-    <JellyfinHostForm />
-    <JellyfinServerSelector />
-  </>
+  component: () => <Home />
 })
 
 const loginRouteByServerId = createRoute({
   getParentRoute: () => rootRoute,
   path: '/server/$serverAddress',
-  component: () => <JellyfinUserLoginForm />
+  component: () => <LoginPage />
 });
 
 const sessionRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/server/$serverAddress/sessions',
-  component: () => <JellyfinSessionSelector />
+  component: () => <SessionPage />
 })
 
 const sessionByIdRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/server/$serverAddress/sessions/$sessionId",
-  component: () => <JellyfinRemoteControl />
+  component: () => <SessionByIdPage />
 });
 
 const libraryBySessionIdRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/server/$serverAddress/sessions/$sessionId/library",
-  component: () => <JellyfinLibrary />
+  component: () => <LibraryBySessionIdPage />
 })
 
-const espidodesByLibraryIdRoute = createRoute({
+const episodesByLibraryIdRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/server/$serverAddress/sessions/$sessionId/library/$libraryId/collectionType/$collectionType",
-  component: () => <JellyfinMediaByLibraryId />
+  component: () => <MediaByLibraryId />
 })
 
 
@@ -67,7 +63,7 @@ const routeTree = rootRoute.addChildren([
   sessionRoute,
   sessionByIdRoute,
   libraryBySessionIdRoute,
-  espidodesByLibraryIdRoute
+  episodesByLibraryIdRoute
 ])
 
 declare module '@tanstack/react-router' {

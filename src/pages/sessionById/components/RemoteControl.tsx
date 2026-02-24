@@ -12,7 +12,7 @@ import { TiMediaFastForward, TiMediaFastForwardOutline, TiMediaPause, TiMediaPla
 
 const BOTTOM_COMMAND_BUTTONS_SIZE = '54px';
 
-const JellyfinRemoteControl = () => {
+const RemoteControl = () => {
   const { playback, sessionCommand } = useJellyfinPlayback();
   const { getCurrentSessionInfo } = useJellyfinPlayback();
   const queryClient = useQueryClient();
@@ -46,7 +46,7 @@ const JellyfinRemoteControl = () => {
     await sessionCommand(serverAddress, sessionId, command);
     invalidateQuery();
   }
-  return <Flex direction='column' align='center' gap='2' data-testid='JellyfinRemoteControl'>
+  return <Flex direction='column' align='center' gap='2' data-testid='RemoteControl'>
     <Flex w='100%' justify='space-between'>
       <Link to=".." >
         <IconButton variant='ghost'>
@@ -103,4 +103,4 @@ const JellyfinRemoteControl = () => {
   </Flex>;
 };
 
-export default JellyfinRemoteControl;
+export default RemoteControl;
