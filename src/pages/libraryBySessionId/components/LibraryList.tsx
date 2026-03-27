@@ -3,7 +3,7 @@ import { Box, Flex, Image, Skeleton, Text } from "@chakra-ui/react";
 import type { BaseItemDto } from "@jellyfin/sdk/lib/generated-client/models";
 import { Link, useParams } from "@tanstack/react-router";
 
-const JellyfinLibraryList = ({ library }: { library: BaseItemDto[] | null }) => {
+const LibraryList = ({ library }: { library: BaseItemDto[] | null }) => {
   const params = useParams({ from: '/server/$serverAddress/sessions/$sessionId/library' });
   const colors = useJellyfinColors();
   if (!library) {
@@ -35,4 +35,4 @@ const JellyfinLibraryList = ({ library }: { library: BaseItemDto[] | null }) => 
   </Flex>;
 };
 
-export default JellyfinLibraryList;
+export default LibraryList;

@@ -1,7 +1,7 @@
 import { JELLYFIN_ACCESS_TOKEN_KEY } from "@/constants/constants";
 import type { iSessionProvider } from "./iSessionProvider";
 
-
+// LocalSession provider to persist session on  local/session storage
 export class LocalSession implements iSessionProvider {
 
   getSession(): string | null {

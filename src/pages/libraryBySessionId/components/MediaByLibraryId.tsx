@@ -44,7 +44,7 @@ const Container = ({ children }: { children: ReactNode }) => {
   </Flex>
 }
 
-const JellyfinMediaByLibraryId = () => {
+const MediaByLibraryId = () => {
   const params = useParams({ from: '/server/$serverAddress/sessions/$sessionId/library/$libraryId/collectionType/$collectionType' })
   const { getEpisodes, playMedia, getSeasons, getSeasonEpisodes } = useJellyfinMediaManager({ serverAddress: params.serverAddress });
   const colors = useJellyfinColors();
@@ -411,4 +411,4 @@ const JellyfinMediaByLibraryId = () => {
   </Container>;
 };
 
-export default JellyfinMediaByLibraryId;
+export default MediaByLibraryId;

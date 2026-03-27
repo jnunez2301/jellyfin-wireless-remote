@@ -1,6 +1,6 @@
 import useLibraryStore from "@/stores/useLibraryStore";
 import useMediaStore from "@/stores/useMediaStore";
-import { getHeaders } from "@/utils/api/getHeaders";
+import { getHeaders } from "@/helpers/api/getHeaders";
 import type {
   BaseItemDto,
   BaseItemDtoQueryResult

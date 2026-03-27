@@ -1,5 +1,5 @@
 import useJellyfin from '@/hooks/useJellyfin';
-import { type RecentServerEntry, RecentServers } from '@/models/RecentServers';
+import { type RecentServerEntry, RecentServers } from '@/helpers/RecentServers';
 import { Box, Field, Flex, IconButton, Input, Text } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
@@ -31,14 +31,14 @@ const HostFormSchema = z.object({
     })
 })
 
-export type HostForm = z.infer<typeof HostFormSchema>;
+export type iHostForm = z.infer<typeof HostFormSchema>;
 
-const JellyfinHostForm = () => {
+const HostForm = () => {
   const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<RecentServerEntry[]>([]);
   const { getServers } = useJellyfin();
 
-  const { register, handleSubmit, setValue, formState: { errors, isValid } } = useForm<HostForm>({
+  const { register, handleSubmit, setValue, formState: { errors, isValid } } = useForm<iHostForm>({
     defaultValues: {
       hostUrl: "",
     },
@@ -50,7 +50,7 @@ const JellyfinHostForm = () => {
     setSuggestions(recentServers.getServers());
   }, []);
 
-  async function onSubmit(data: HostForm) {
+  async function onSubmit(data: iHostForm) {
     setLoading(true);
     try {
       const found = await getServers(data.hostUrl);
@@ -139,4 +139,4 @@ const JellyfinHostForm = () => {
   </form>;
 };
 
-export default JellyfinHostForm;
+export default HostForm;

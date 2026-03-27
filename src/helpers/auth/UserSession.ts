@@ -1,5 +1,6 @@
 import type { iSessionProvider } from "./iSessionProvider";
 
+// Generic session provider
 export class UserSession {
   private readonly provider: iSessionProvider;
 

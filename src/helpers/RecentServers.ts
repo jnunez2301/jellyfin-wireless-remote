@@ -6,7 +6,7 @@ export interface RecentServerEntry {
   url: string;
   addedAt: number; // Unix timestamp ms
 }
-
+// Class made to retrieve the most recent servers that the users have used
 export class RecentServers {
   getServers(): RecentServerEntry[] {
     try {

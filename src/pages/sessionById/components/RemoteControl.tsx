@@ -9,18 +9,16 @@ import { IoVolumeMedium, IoVolumeMute } from "react-icons/io5";
 import { LuArrowLeft } from "react-icons/lu";
 import { PiSpeakerHigh, PiSpeakerLow } from "react-icons/pi";
 import { TiMediaFastForward, TiMediaFastForwardOutline, TiMediaPause, TiMediaPlay, TiMediaRewind, TiMediaRewindOutline, TiMediaStop } from "react-icons/ti";
+import SubtitleSelector from "./SubtitleSelector";
 
 const BOTTOM_COMMAND_BUTTONS_SIZE = '54px';
 
-const JellyfinRemoteControl = () => {
+const RemoteControl = () => {
   const { playback, sessionCommand } = useJellyfinPlayback();
   const { getCurrentSessionInfo } = useJellyfinPlayback();
   const queryClient = useQueryClient();
-  // Simple hook to trigger rerender on button press
   const colors = useJellyfinColors();
-  // Playback Session
   const currentSession = useCurrentSession();
-
 
   const { sessionId, serverAddress } = useParams({
     from: '/server/$serverAddress/sessions/$sessionId'
@@ -42,23 +40,40 @@ const JellyfinRemoteControl = () => {
     await playback(serverAddress, sessionId, command);
     invalidateQuery();
   }
+
   async function handleSessionCommand(command: SessionCommand) {
     await sessionCommand(serverAddress, sessionId, command);
     invalidateQuery();
   }
-  return <Flex direction='column' align='center' gap='2' data-testid='JellyfinRemoteControl'>
+
+  const isPlaying = currentSession?.NowPlayingItem != null;
+  const itemId = currentSession?.NowPlayingItem?.Id ?? '';
+  const currentSubtitleIndex = currentSession?.PlayState?.SubtitleStreamIndex ?? -1;
+
+  return <Flex direction='column' align='center' gap='2' data-testid='RemoteControl'>
     <Flex w='100%' justify='space-between'>
-      <Link to=".." >
+      <Link to="..">
         <IconButton variant='ghost'>
           <LuArrowLeft />
         </IconButton>
       </Link>
-      <Link to="/server/$serverAddress/sessions/$sessionId/library" params={{ serverAddress: serverAddress, sessionId: sessionId }} >
-        <IconButton variant='ghost' p='3'>
-          Media
-          <FaFilm />
-        </IconButton>
-      </Link>
+      <Flex gap='1'>
+        {isPlaying && (
+          <SubtitleSelector
+            serverAddress={serverAddress}
+            sessionId={sessionId}
+            itemId={itemId}
+            currentSubtitleIndex={currentSubtitleIndex}
+            onSubtitleChange={invalidateQuery}
+          />
+        )}
+        <Link to="/server/$serverAddress/sessions/$sessionId/library" params={{ serverAddress: serverAddress, sessionId: sessionId }}>
+          <IconButton variant='ghost' p='3'>
+            Media
+            <FaFilm />
+          </IconButton>
+        </Link>
+      </Flex>
     </Flex>
     {/* PLAY BUTTON */}
     <Center>
@@ -91,7 +106,6 @@ const JellyfinRemoteControl = () => {
         {!currentSession?.PlayState?.IsMuted ? <><IoVolumeMute /> Mute</> : <><IoVolumeMedium /> Unmute</>}
       </IconButton>
     </Flex>
-    {/* TODO: Skip intro */}
     {/* COMMAND BUTTONS */}
     <Flex w='100%' justify='space-between' gap='1'>
       <IconButton w={BOTTOM_COMMAND_BUTTONS_SIZE} variant='subtle' onClick={() => handlePlayback('PreviousTrack')}><TiMediaRewind /></IconButton>
@@ -103,4 +117,4 @@ const JellyfinRemoteControl = () => {
   </Flex>;
 };
 
-export default JellyfinRemoteControl;
+export default RemoteControl;

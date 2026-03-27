@@ -1,6 +1,6 @@
 import { INITIAL_CLIENT_INFO } from '@/constants/constants';
 import { useJellyfinStore } from '@/stores/useJellyfinStore';
-import { getHeaders } from '@/utils/api/getHeaders';
+import { getHeaders } from '@/helpers/api/getHeaders';
 import { Api, Jellyfin, type RecommendedServerInfo } from '@jellyfin/sdk';
 import type {
   UserDto,

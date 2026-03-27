@@ -1,5 +1,5 @@
-import { LocalSession } from "@/models/LocalSession";
-import { UserSession } from "@/models/UserSession";
+import { LocalSession } from "@/helpers/auth/LocalSession";
+import { UserSession } from "@/helpers/auth/UserSession";
 import { IconButton } from "@chakra-ui/react";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { LuDoorOpen } from "react-icons/lu";
