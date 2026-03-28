@@ -117,7 +117,7 @@ const KeepWatchingSelector = ({ serverAddress, sessionId }: KeepWatchingSelector
                       })}
                       {mediaStore.resumeItems.length === 0 && (
                         <Text color="fg.muted" textAlign="center" py="4">
-                          Nothing to continue watching
+                          There is nothing to continue, try watching something
                         </Text>
                       )}
                     </Stack>

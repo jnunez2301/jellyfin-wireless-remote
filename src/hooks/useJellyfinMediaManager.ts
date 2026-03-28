@@ -103,6 +103,25 @@ const useJellyfinMediaManager = ({ serverAddress }: useJellyfinMediaManagerProps
     }
   }
 
+  async function getNextUp() {
+    try {
+      const userRes = await axios.get(`${serverAddress}Users/Me`, { headers: { ...getHeaders() } });
+      const userId = userRes.data.Id as string;
+      const res = await axios.get(`${serverAddress}Shows/NextUp`, {
+        headers: { ...getHeaders() },
+        params: { UserId: userId, Fields: 'UserData', Limit: 10 }
+      });
+      const data = res.data as BaseItemDtoQueryResult;
+      const items = data.Items ?? [];
+      mediaStore.setNextEpisodes(items);
+      return items;
+    } catch (error) {
+      console.error(error);
+      mediaStore.setNextEpisodes([]);
+      return [];
+    }
+  }
+
   //  -------- Start of [AI Content] may contain some alucination --------
   /**
  * Get all seasons for a TV series
@@ -156,7 +175,7 @@ const useJellyfinMediaManager = ({ serverAddress }: useJellyfinMediaManagerProps
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serverAddress])
-  return { getLibraries, getEpisodes, playMedia, getSeasons, getSeasonEpisodes, getResumeItems }
+  return { getLibraries, getEpisodes, playMedia, getSeasons, getSeasonEpisodes, getResumeItems, getNextUp }
 };
 
 export default useJellyfinMediaManager;

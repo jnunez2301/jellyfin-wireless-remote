@@ -11,6 +11,7 @@ import { PiSpeakerHigh, PiSpeakerLow } from "react-icons/pi";
 import { TiMediaFastForward, TiMediaFastForwardOutline, TiMediaPause, TiMediaPlay, TiMediaRewind, TiMediaRewindOutline, TiMediaStop } from "react-icons/ti";
 import SubtitleSelector from "./SubtitleSelector";
 import KeepWatchingSelector from "./KeepWatchingSelector";
+import WhatsNextSelector from "./WhatsNextSelector";
 
 const BOTTOM_COMMAND_BUTTONS_SIZE = '54px';
 
@@ -109,13 +110,17 @@ const RemoteControl = () => {
       </Flex>
     </Flex>
     {/* COMMAND BUTTONS */}
-    <Flex w='100%' justify='space-between' gap='1'>
+    <Flex justify='space-between' gap='1'>
       <IconButton w={BOTTOM_COMMAND_BUTTONS_SIZE} variant='subtle' onClick={() => handlePlayback('PreviousTrack')}><TiMediaRewind /></IconButton>
       <IconButton w={BOTTOM_COMMAND_BUTTONS_SIZE} variant='subtle' onClick={() => handleSessionCommand('MoveLeft')}><TiMediaRewindOutline /></IconButton>
       <IconButton w={BOTTOM_COMMAND_BUTTONS_SIZE} variant='subtle' onClick={() => handlePlayback('Stop')}><TiMediaStop /></IconButton>
       <IconButton w={BOTTOM_COMMAND_BUTTONS_SIZE} variant='subtle' onClick={() => handleSessionCommand('MoveRight')}><TiMediaFastForwardOutline /></IconButton>
       <IconButton w={BOTTOM_COMMAND_BUTTONS_SIZE} variant='subtle' onClick={() => handlePlayback('NextTrack')}><TiMediaFastForward /></IconButton>
     </Flex>
+    <WhatsNextSelector
+      serverAddress={serverAddress}
+      sessionId={sessionId}
+    />
   </Flex>;
 };
 
