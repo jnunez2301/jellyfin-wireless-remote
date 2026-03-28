@@ -7,12 +7,16 @@ interface MediaStore {
   mediaList: null | BaseItemDto[];
   setMediaList: (media: BaseItemDto[]) => void;
   clearMedia: () => void;
+  resumeItems: null | BaseItemDto[];
+  setResumeItems: (items: BaseItemDto[] | null) => void;
 }
 
 const useMediaStore = create<MediaStore>((set) => ({
   mediaList: null,
   setMediaList: (media) => set({ mediaList: media }),
   clearMedia: () => set({ mediaList: null }),
+  resumeItems: null,
+  setResumeItems: (items) => set({ resumeItems: items }),
 }));
 
 export default useMediaStore;
