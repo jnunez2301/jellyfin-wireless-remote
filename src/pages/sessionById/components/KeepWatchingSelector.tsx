@@ -1,7 +1,9 @@
 import useJellyfinMediaManager from "@/hooks/useJellyfinMediaManager";
 import useMediaStore from "@/stores/useMediaStore";
-import { getEpisodeLabel, getThumbnailUrl } from "@/helpers/mediaItem";
 import KeepWatchingSkeleton from "./KeepWatchingSkeleton";
+import KeepWatchingItem from "./KeepWatchingItem";
+import ConfirmPlayDialog from "./ConfirmPlayDialog";
+import type { BaseItemDto } from "@jellyfin/sdk/lib/generated-client/models";
 import {
   CloseButton,
   Dialog,
@@ -24,23 +26,38 @@ const KeepWatchingSelector = ({ serverAddress, sessionId }: KeepWatchingSelector
   const { getResumeItems, playMedia } = useJellyfinMediaManager({ serverAddress });
   const mediaStore = useMediaStore();
   const [open, setOpen] = useState(false);
+  const [confirmItem, setConfirmItem] = useState<BaseItemDto | null>(null);
+  const [loading, setLoading] = useState(false);
 
   async function handleOpen() {
     setOpen(true);
     await getResumeItems();
   }
 
-  async function handleSelect(itemId: string) {
-    setOpen(false);
-    await playMedia(sessionId, "PlayNow", itemId);
+  function handleSelect(item: BaseItemDto) {
+    setConfirmItem(item);
+  }
+
+  async function handleConfirm() {
+    if (!confirmItem?.Id) return;
+    const itemId = confirmItem.Id;
+    setLoading(true);
+    try {
+      await playMedia(sessionId, "PlayNow", itemId);
+      setConfirmItem(null);
+      setOpen(false);
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
     return () => {
       mediaStore.setResumeItems(null);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
   return (
     <>
       <IconButton variant="ghost" p="3" onClick={handleOpen}>
@@ -60,74 +77,40 @@ const KeepWatchingSelector = ({ serverAddress, sessionId }: KeepWatchingSelector
                 </Dialog.CloseTrigger>
               </Dialog.Header>
               <Dialog.Body pb="4">
-                <Flex direction="column" overflowY="auto" maxH="55dvh">
-                  {mediaStore.resumeItems === null ? (
-                    <KeepWatchingSkeleton />
-                  ) : (
+                {mediaStore.resumeItems === null ? (
+                  <KeepWatchingSkeleton />
+                ) : (
+                  <Flex direction="column" overflowY="auto" maxH="55dvh">
                     <Stack gap="1">
-                      {mediaStore.resumeItems.map((item) => {
-                        const { title, subtitle } = getEpisodeLabel(item);
-                        const thumbnail = getThumbnailUrl(serverAddress, item);
-                        const seen = item.UserData?.Played ?? false;
-                        return (
-                          <Flex
-                            key={item.Id}
-                            as="button"
-                            align="center"
-                            gap="3"
-                            p="2"
-                            rounded="md"
-                            w="100%"
-                            opacity={seen ? 0.4 : 1}
-                            bg={seen ? "bg.subtle" : "transparent"}
-                            _hover={{ bg: seen ? "bg.subtle" : "bg.muted" }}
-                            cursor="pointer"
-                            onClick={() => handleSelect(item.Id!)}
-                          >
-                            {thumbnail ? (
-                              <img
-                                src={thumbnail}
-                                style={{ width: 72, height: 72, objectFit: "cover", borderRadius: "4px", flexShrink: 0 }}
-                              />
-                            ) : (
-                              <Flex
-                                w="72px"
-                                h="72px"
-                                rounded="sm"
-                                bg="bg.subtle"
-                                align="center"
-                                justify="center"
-                                flexShrink={0}
-                              >
-                                <LuHistory />
-                              </Flex>
-                            )}
-                            <Flex direction="column" align="flex-start" flex="1" minW="0">
-                              <Text fontWeight="semibold" lineClamp={1} textAlign="left">
-                                {title}
-                              </Text>
-                              {subtitle && (
-                                <Text fontSize="sm" color="fg.muted" lineClamp={1} textAlign="left">
-                                  {subtitle}
-                                </Text>
-                              )}
-                            </Flex>
-                          </Flex>
-                        );
-                      })}
+                      {mediaStore.resumeItems.map((item) => (
+                        <KeepWatchingItem
+                          key={item.Id}
+                          serverAddress={serverAddress}
+                          item={item}
+                          onSelect={handleSelect}
+                        />
+                      ))}
                       {mediaStore.resumeItems.length === 0 && (
                         <Text color="fg.muted" textAlign="center" py="4">
                           There is nothing to continue, try watching something
                         </Text>
                       )}
                     </Stack>
-                  )}
-                </Flex>
+                  </Flex>
+                )}
               </Dialog.Body>
             </Dialog.Content>
           </Dialog.Positioner>
         </Portal>
       </Dialog.Root>
+
+      <ConfirmPlayDialog
+        title="Resume playback?"
+        item={confirmItem}
+        onClose={() => setConfirmItem(null)}
+        onConfirm={handleConfirm}
+        loading={loading}
+      />
     </>
   );
 };
