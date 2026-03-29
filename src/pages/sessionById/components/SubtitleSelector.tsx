@@ -60,7 +60,7 @@ const SubtitleSelector = ({
 
   return (
     <>
-      <IconButton variant="ghost" p="3" onClick={() => setOpen(true)}>
+      <IconButton size='xl' variant="subtle" p="3" onClick={() => setOpen(true)}>
         <LuCaptions />
         {getActiveLanguage(tracks, activeIndex)}
       </IconButton>

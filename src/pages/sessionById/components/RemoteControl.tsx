@@ -10,6 +10,8 @@ import { LuArrowLeft } from "react-icons/lu";
 import { PiSpeakerHigh, PiSpeakerLow } from "react-icons/pi";
 import { TiMediaFastForward, TiMediaFastForwardOutline, TiMediaPause, TiMediaPlay, TiMediaRewind, TiMediaRewindOutline, TiMediaStop } from "react-icons/ti";
 import SubtitleSelector from "./SubtitleSelector";
+import KeepWatchingSelector from "./KeepWatchingSelector";
+import WhatsNextSelector from "./WhatsNextSelector";
 
 const BOTTOM_COMMAND_BUTTONS_SIZE = '54px';
 
@@ -46,7 +48,6 @@ const RemoteControl = () => {
     invalidateQuery();
   }
 
-  const isPlaying = currentSession?.NowPlayingItem != null;
   const itemId = currentSession?.NowPlayingItem?.Id ?? '';
   const currentSubtitleIndex = currentSession?.PlayState?.SubtitleStreamIndex ?? -1;
 
@@ -58,15 +59,8 @@ const RemoteControl = () => {
         </IconButton>
       </Link>
       <Flex gap='1'>
-        {isPlaying && (
-          <SubtitleSelector
-            serverAddress={serverAddress}
-            sessionId={sessionId}
-            itemId={itemId}
-            currentSubtitleIndex={currentSubtitleIndex}
-            onSubtitleChange={invalidateQuery}
-          />
-        )}
+        <KeepWatchingSelector serverAddress={serverAddress} sessionId={sessionId} />
+
         <Link to="/server/$serverAddress/sessions/$sessionId/library" params={{ serverAddress: serverAddress, sessionId: sessionId }}>
           <IconButton variant='ghost' p='3'>
             Media
@@ -102,18 +96,31 @@ const RemoteControl = () => {
         <IconButton disabled={currentSession?.PlayState?.VolumeLevel === 100} size='2xl' variant='solid' rounded='100%' onClick={() => handleSessionCommand('VolumeUp')}><PiSpeakerHigh /></IconButton>
       </Flex>
       {/* MUTE BUTTON */}
-      <IconButton size='xl' variant={currentSession?.PlayState?.IsMuted ? "solid" : 'subtle'} p='3' my='2' onClick={() => handleSessionCommand(currentSession?.PlayState?.IsMuted ? 'UnMute' : 'Mute')}>
-        {!currentSession?.PlayState?.IsMuted ? <><IoVolumeMute /> Mute</> : <><IoVolumeMedium /> Unmute</>}
-      </IconButton>
+      <Flex alignItems="center" gap='2'>
+        <IconButton size='xl' variant={currentSession?.PlayState?.IsMuted ? "solid" : 'subtle'} p='3' my='2' onClick={() => handleSessionCommand(currentSession?.PlayState?.IsMuted ? 'UnMute' : 'Mute')}>
+          {!currentSession?.PlayState?.IsMuted ? <><IoVolumeMute /> Mute</> : <><IoVolumeMedium /> Unmute</>}
+        </IconButton>
+        <SubtitleSelector
+          serverAddress={serverAddress}
+          sessionId={sessionId}
+          itemId={itemId}
+          currentSubtitleIndex={currentSubtitleIndex}
+          onSubtitleChange={invalidateQuery}
+        />
+      </Flex>
     </Flex>
     {/* COMMAND BUTTONS */}
-    <Flex w='100%' justify='space-between' gap='1'>
+    <Flex justify='space-between' gap='1'>
       <IconButton w={BOTTOM_COMMAND_BUTTONS_SIZE} variant='subtle' onClick={() => handlePlayback('PreviousTrack')}><TiMediaRewind /></IconButton>
       <IconButton w={BOTTOM_COMMAND_BUTTONS_SIZE} variant='subtle' onClick={() => handleSessionCommand('MoveLeft')}><TiMediaRewindOutline /></IconButton>
       <IconButton w={BOTTOM_COMMAND_BUTTONS_SIZE} variant='subtle' onClick={() => handlePlayback('Stop')}><TiMediaStop /></IconButton>
       <IconButton w={BOTTOM_COMMAND_BUTTONS_SIZE} variant='subtle' onClick={() => handleSessionCommand('MoveRight')}><TiMediaFastForwardOutline /></IconButton>
       <IconButton w={BOTTOM_COMMAND_BUTTONS_SIZE} variant='subtle' onClick={() => handlePlayback('NextTrack')}><TiMediaFastForward /></IconButton>
     </Flex>
+    <WhatsNextSelector
+      serverAddress={serverAddress}
+      sessionId={sessionId}
+    />
   </Flex>;
 };
 

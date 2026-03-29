@@ -7,12 +7,20 @@ interface MediaStore {
   mediaList: null | BaseItemDto[];
   setMediaList: (media: BaseItemDto[]) => void;
   clearMedia: () => void;
+  resumeItems: null | BaseItemDto[];
+  setResumeItems: (items: BaseItemDto[] | null) => void;
+  nextEpisodes: null | BaseItemDto[];
+  setNextEpisodes: (items: BaseItemDto[] | null) => void;
 }
 
 const useMediaStore = create<MediaStore>((set) => ({
   mediaList: null,
   setMediaList: (media) => set({ mediaList: media }),
   clearMedia: () => set({ mediaList: null }),
+  resumeItems: null,
+  setResumeItems: (items) => set({ resumeItems: items }),
+  nextEpisodes: null,
+  setNextEpisodes: (items) => set({ nextEpisodes: items }),
 }));
 
 export default useMediaStore;
